@@ -1,0 +1,18 @@
+- Newer approaches to data wrangling
+    - Introduction to plyr dplyr and tidyr
+    - Subsetting rows
+    - Subsetting columns
+    - Reshaping data
+    - Generating new data
+    - Grouping and summarizing
+
+- Nothin's gonna stop the flow
+    - Piping with the magrittr package
+
+- Quick interactive visualizations
+    - Using *yr packages and piping for visualization
+    - ggvis
+    - htmlwidgets
+    
+
+R is an extremely powerful tool for data modeling, visualization and general programming.  In many practical applications of statistics, the vast majority of time is spent preparing the data for analysis. However, this also the part where many practitioners who use R also have little training. In recent years, a variety of tools have become avaiable to make data wrangling, summarizing, generation and other operations easier, and easier to read for future use.  This short course will introduce participants to a handful of tools that can make their data process and analytical flow more streamlined and reproducible.

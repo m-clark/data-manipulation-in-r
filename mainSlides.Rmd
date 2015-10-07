@@ -1,0 +1,74 @@
+---
+title: "Exploring Data in R"
+author: "Michael Clark <br> Center for Statistical Consultation and Research <br> University of Michigan"
+date: "Fall, 2015"
+output: 
+  ioslides_presentation: 
+    smaller: yes
+    widescreen: yes
+    theme: cosmo
+    css: slideStyles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Exploring Data in R 
+
+## Outline 
+- Newer approaches to data wrangling
+    - Introduction to plyr dplyr and tidyr
+    - Subsetting rows
+    - Subsetting columns
+    - Reshaping data
+    - Generating new data
+    - Grouping and summarizing
+
+- Nothin's gonna stop the flow
+    - Piping with the magrittr package
+
+- Quick interactive visualizations
+    - Using *yr packages, piping and visualization
+    - ggvis
+    - htmlwidgets
+    
+    
+# A Starting Point
+
+## A Starting Point
+
+```{r}
+packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
+sapply(packs, library, character.only=T)
+
+
+wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population'
+
+test0 = wikiURL %>% 
+  read_html('wikitable sortable') %>% 
+  html_table(fill=T) %>% 
+  extract2(4) %>% 
+  sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%
+  data.frame %>%  
+  mutate(latlon = sapply(str_split(Location, '/'), function(x) x[3]), 
+         latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
+         lat = sapply(latlon, function(x) x[1]),
+         lon = sapply(latlon, function(x) x[2]), 
+         population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),
+         population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
+         popDiff  = population2014-population2010) %>% 
+  select(-latlon, -Location) %>% 
+  filter(as.numeric(as.character(X2014.rank)) <= 100) #%>%  make all one when done
+
+
+
+str(test0)
+
+library(ggplot2)
+test0 %>%
+  leaflet %>% 
+  addTiles %>% 
+  addCircleMarkers(lat=~lat, lng=~lon, radius=~log(population2014))
+```
+
