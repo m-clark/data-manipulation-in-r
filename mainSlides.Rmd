@@ -51,24 +51,30 @@ test0 = wikiURL %>%
   extract2(4) %>% 
   sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%
   data.frame %>%  
-  mutate(latlon = sapply(str_split(Location, '/'), function(x) x[3]), 
+  mutate(latlon = sapply(str_split(Location, '/'), last), 
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
-         lat = sapply(latlon, function(x) x[1]),
-         lon = sapply(latlon, function(x) x[2]), 
+         lat = sapply(latlon, first),
+         lon = sapply(latlon, nth, 2), 
          population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
-         popDiff  = population2014-population2010) %>% 
+         popDiff  = population2014/population2010 - 1) %>% 
   select(-latlon, -Location) %>% 
-  filter(as.numeric(as.character(X2014.rank)) <= 100) #%>%  make all one when done
+  filter(as.numeric(as.character(X2014.rank)) <= 50) #%>%  make all one when done
 
 
 
 str(test0)
-
-library(ggplot2)
+pal <- colorNumeric(palette = c('Red', 'White', 'Blue'), test0$popDiff)
+# library(ggplot2)
 test0 %>%
   leaflet %>% 
-  addTiles %>% 
-  addCircleMarkers(lat=~lat, lng=~lon, radius=~log(population2014))
+  addTiles() %>% 
+  setView(-93.65, 35, zoom = 4) %>% 
+  addCircleMarkers(~lon, ~lat,
+                   radius=~scales::rescale(popDiff, c(1, 10)),
+             fillColor=~pal(popDiff), stroke=FALSE, fillOpacity = .85,
+             popup=~paste(City, popDiff))
+
+# devtools::install_github("ropensci/cartographer", build_vignettes = TRUE)
 ```
 
