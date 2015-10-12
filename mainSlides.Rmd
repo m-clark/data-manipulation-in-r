@@ -57,12 +57,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Some base R approaches
 
+- Tedious, or typically two steps just to get the columns you want.
+
 ```{r, eval=FALSE, echo=TRUE}
 newData = oldData[,c(1,2,3,4, etc.)]
 newData = oldData[,c('X1', 'X2', etc.)]
-newData = oldData[,c(paste0('X', 1:10), 'Y1', 'Y2', grep(colnames(oldData), '^XYZ', value=T))]
-newData = subset(oldData, select = c(paste0('X', 1:10), 'Y1', 'Y2', 
-                                     grep(colnames(oldData), '^XYZ', value=T)))
+cols = c(paste0('X', 1:10), 'Y1', 'Y2', grep(colnames(oldData), '^XYZ', value=T))
+newData = oldData[,cols]
+newData = subset(oldData, select = cols)
 ```
 
 ## More
