@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Goals
 - Introduce newer approaches to data wranging, scrubbing, manipulation etc.
 
-- Show the benefits of piping
+- Show the benefits of piping code
 
 - Put it all together with some newer visualization packages
 
@@ -61,7 +61,8 @@ knitr::opts_chunk$set(echo = FALSE)
 newData = oldData[,c(1,2,3,4, etc.)]
 newData = oldData[,c('X1', 'X2', etc.)]
 newData = oldData[,c(paste0('X', 1:10), 'Y1', 'Y2', grep(colnames(oldData), '^XYZ', value=T))]
-newData = subset(oldData, select = similarstringhere_ohwaititdoesntwantquotednamesanymorehavefun)
+newData = subset(oldData, select = c(paste0('X', 1:10), 'Y1', 'Y2', 
+                                     grep(colnames(oldData), '^XYZ', value=T)))
 ```
 
 ## More
