@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - Show the benefits of piping code
 
-- Put it all together with some newer visualization packages
+- Put it all together with some newer visualization packages 
 
 
 
