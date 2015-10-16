@@ -5,3 +5,19 @@
 .emphasized {
    font-size: 1.2em;
 }
+
+
+
+table.acknowledge {
+  /*background-color: navy;
+	border: solid black 10px;*/
+	border-spacing: 40px;
+	color: black;
+	color: rgba(255,85,0,.75);
+	font-family: Magneto;
+}
+
+table.acknowledge td {
+  font-size:32pt;
+  padding: 20px;
+}

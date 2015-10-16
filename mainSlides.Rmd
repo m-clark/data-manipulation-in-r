@@ -1,20 +1,24 @@
 ---
-title: "Data Discovery in R"
-author: "Michael Clark <br> Center for Statistical Consultation and Research <br> University of Michigan"
+title: "Ceci n'est pas une %>%: <br>Exploring Your Data with R"
+author: ""
+
 date: "Fall, 2015"
 output: 
   ioslides_presentation: 
     smaller: yes
     widescreen: yes
-    theme: cosmo
     css: slideStyles.css
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr); library(magrittr)
 ```
 
 # Data Discovery in R
+
+##
+
 
 ## Goals
 - Introduce newer approaches to data wranging, scrubbing, manipulation etc.
@@ -22,7 +26,6 @@ knitr::opts_chunk$set(echo = FALSE)
 - Show the benefits of piping code
 
 - Put it all together with some newer visualization packages 
-
 
 
 ## Outline 
@@ -68,22 +71,22 @@ newData = subset(oldData, select = cols)
 ```
 
 ## More
-- What if you also want any where Z = 'Yes', Q = 'No', and only the last 50 of those results, ordered by Y1 (descending)?
+- What if you also want observations where Z is 'Yes', Q is 'No', and only the last 50 of those results, ordered by Y1 (descending)?
 
 ```{r2, eval=FALSE, echo=TRUE}
 newData = newData[oldData$Z == 'Yes' & oldData$Q == 'No',]
 newData = tail(newData, 50)
-newData = newdata[order(newdata$Y1, decreasing=T)]
+newData = newdata[order(newdata$Y1, decreasing=T),]
 ```
 
 ## An alternative
 
 ```{r, eval=FALSE, echo=TRUE}
 newData = oldData %>% 
-  select(one_of(paste0('X', 1:10)), contains('Y'), starts_with('XYZ')) %>% 
   filter(Z == 'Yes', Q == 'No') %>% 
+  select(num_range('X', 1:10), contains('Y'), starts_with('XYZ')) %>% 
   tail(50) %>% 
-  desc(Y1)
+  arrange(desc(Y1))
 ```
 
 ## An alternative
@@ -91,7 +94,7 @@ newData = oldData %>%
 - Even though the former is probably more concise than many would do on their own, it still is: 
     - noisier
     - less legible
-    - less amenable to additional changes
+    - less amenable to additional data changes
     - requires esoteric knowledge (e.g. regular expressions)
 
 # Another example...
@@ -141,7 +144,7 @@ wikiURL %>%
 And voila...
 
 ##
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 # packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
 # sapply(packs, library, character.only=T)
 library(magrittr); library(rvest); library(dplyr); library(dplyr); library(stringr)
@@ -184,3 +187,142 @@ library(leaflet)
 - We will focus on plyr, dplyr, tidyr, and maybe reshape2
 - But others, e.g. data.table, take different approaches and may be useful as well
 - Newer visualization packages take advantage of these approaches to data manipulation
+
+# A provocation
+
+```{r, eval=T, echo=T}
+c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
+{
+  .. <-  . %>%
+    if (length(.) == 1)  .
+    else paste(.[1], '%>%', ..(.[-1]))
+  ..(.)
+} 
+```
+
+# Selecting Variables
+## Selecting Variables
+
+# Filtering Observations
+## Filtering Observations
+
+# Reshaping Data
+## Reshaping Data
+
+# Grouping and Summarizing Data
+## Grouping and Summarizing Data
+
+# Generating New Data
+## Generating New Data
+
+# Your Turn
+## Your Turn
+?state.x77
+
+Using one pipe sequence 
+
+1. convert state.x77 (a base R object) to a data frame
+2. create a new variable called 'Region' that is equal to state.region
+2. create a new variable called 'State' that is equal to state.name
+3. select only if Population is greater than 1000 (thousands)
+3. select Region and variables beginning with I
+4. group by region
+5. summarise Income, Illiteracy or Both, using the mean function
+
+## Your Turn
+```{r, eval=FALSE}
+state.x77 %>% 
+  data.frame %>% 
+  mutate(Region = state.region,
+         State = state.name) %>% 
+  filter(Population > 1000) %>% 
+  select(Region, starts_with('I')) %>% 
+  group_by(Region) %>% 
+  summarise(meanInc=mean(Income),
+            meanIll=mean(Illiteracy))
+```
+
+# More with pipes
+## More with pipes
+
+- Recap thus far
+- %>% : Passes the prior to the function after the pipe
+    - x %>% f same as f(x)
+- Example
+
+```{r}
+iris %>% head
+head(iris)
+```
+
+
+## More with pipes
+
+
+- \%\$\%  : Exposes the names in the prior to the function after
+    - x %\$% y(a, b)  same as y(x\$a, x\$b)
+- Example
+
+```{r}
+iris %$% lm(Sepal.Length ~ Sepal.Width)
+```
+
+## More with pipes
+- %T>% : Passes the prior to the function after the pipe and what follows
+    - x %T>% y %>% z == x %>% y 
+- Example
+
+```{r, fig.width=3, fig.height=3}
+iris %>% 
+  select(Sepal.Length, Sepal.Width) %T>% 
+  plot %>%
+  summary
+```
+
+## More with pipes
+- Unfortunately the T pipe does not allow for printable results.
+
+- Works
+```{r, eval=FALSE, }
+iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>% summary
+```
+
+- Provides no summary.
+```{r, eval=FALSE}
+iris %>% select(Sepal.Length, Sepal.Width) %T>% summary %>% plot
+```
+
+- Very limiting in my opinion
+
+## More with pipes
+- %<>% : assigns to former object the operations that follow
+
+- Example
+
+```{r}
+iris2 = iris
+iris2 %>% summary
+iris2 %<>% rnorm(10)
+iris2
+```
+
+
+
+# Piping to other functions
+## Piping to other functions
+
+## Wrap up
+
+
+<table class='acknowledge'>
+<tr>
+<td style='font-size:12pt'>Michael Clark <br> Advanced Research Computing <br> Consulting for Statistics, Computing & Analytics Research <br> University of Michigan</td>
+
+<td style='text-align:right; font-size:12pt'>Seth Berry<br> Notre Dame Research<br> Center for Social Research<br> University of Notre Dame</td>
+</tr>
+</table>
+
+
+
+
+## Further
