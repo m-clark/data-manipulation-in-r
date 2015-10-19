@@ -1,8 +1,8 @@
 CSS Changes (to do)
 
-Get rid of bottom fade
-Get rid of slide numbering
-Align code to text
-Add emphs
-Change title slide font/color
-Code font smaller
+Get rid of bottom fade - It seems to already be gone on both Firefox and Chrome
+Get rid of slide numbering - Done (good for both Firefox and Chrome)
+Align code to text - Done (nothing has changed, but the code is there to do it)
+Add emphs - Done (color is #ff5500 and italicized)
+Change title slide font/color - Done (currently set to #ff5500)
+Code font smaller - Done (currently set to 10px)

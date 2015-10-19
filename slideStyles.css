@@ -6,8 +6,6 @@
    font-size: 1.2em;
 }
 
-
-
 table.acknowledge {
   /*background-color: navy;
 	border: solid black 10px;*/
@@ -20,4 +18,53 @@ table.acknowledge {
 table.acknowledge td {
   font-size:32pt;
   padding: 20px;
+}
+
+/* The following is for emphasis */
+
+.emph{
+  color: #ff5500;
+  font-style: italic;
+}
+
+
+/* The following chunk removes the slide numbers */
+
+slides > slide:not(.nobackground)::after {
+    bottom: 20px;
+    display: none;
+    font-size: 12pt;
+    line-height: 1.9;
+    position: absolute;
+    right: 60px;
+}
+
+/* The following allows for changing the title slide font*/
+
+.title-slide hgroup h1 {
+    color: #ff5500;
+    font-size: 65px;
+    letter-spacing: -3px;
+    line-height: 1.4;
+}
+
+/* The following is for changing the font size of code chunks */
+/* Each of the selectors is needed to change the different things found
+within a code chunk*/
+
+.prettyprint .pln, .prettyprint .pun, .prettyprint .opn, .prettyprint .clo,
+.prettyprint .str, .prettyprint .lit, .prettyprint .atv{
+  font-size: 10px;
+}
+
+/* The following is for manipulating code chunk positions */
+/* Don't mind the warning it is giving about IE */
+
+pre {
+  box-sizing: border-box;
+  font-family: "Source Code Pro", "Courier New", monospace;
+  left: -50px; /* This changes where the code chunk box actually starts */ 
+  padding: 10px 0 10px 60px; /* Change the last value here to move the text left or right */
+  position: relative;
+  width: 106%; /* This changes where the code chunk box ends on the right side */
 }
