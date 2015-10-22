@@ -200,20 +200,167 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 } 
 ```
 
-# Selecting Variables
-## Selecting Variables
+# Generating New Data
+## Generating New Data
+
+As is often the case, there are times when we want to calculate new variables based upon existing variable.
+
+```{r}
+library(rvest); library(dplyr); library(magrittr); library(tidyr)
+
+statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
+  html_nodes("table#totals") %>% 
+  html_table %>% 
+  data.frame %>% 
+  filter(Rk != "Rk")
+
+statsTab[, 6:30] = sapply(statsTab[, 6:30], as.numeric)
+
+glimpse(statsTab)
+  
+statsTab = statsTab %>% 
+  mutate(trueShooting = round(PTS / (2 * (FGA + (.44 * FTA))), 2),
+         effectiveFG = round((FG + (.5 * X3P)) / FGA, 2), 
+         shootingDif = trueShooting - FG.)
+
+summary(statsTab)
+
+statsTab %>% arrange(desc(effectiveFG)) %>% head
+
+```
+
+
+Sometimes we want to combine (or split) variables
+
+```{r}
+statsTab %>% 
+  unite_("posTeam", c("Pos", "Tm"))
+```
+
+We will go a bit deeper into this in bit.
 
 # Filtering Observations
 ## Filtering Observations
 
+Recall this bit of code?
+
+```{r}
+statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
+  html_nodes("table#totals") %>% 
+  html_table %>% 
+  data.frame %>% 
+  filter(Rk != "Rk")
+```
+
+You will notice the filter line at the end.
+
+We sometimes want to see a very specific portion of the data.
+
+```{r}
+statsTab %>% 
+  filter(Age > 35, Pos == "SF" | Pos == "PF")
+```
+
+
+```{r}
+statsTab %>% 
+  unite_("posTeam", c("Pos", "Tm")) %>% 
+  filter(posTeam == "PF_SAS") %>% 
+  arrange(desc(PTS/PF))
+```
+
+# Selecting Variables
+## Selecting Variables
+
+There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+
+Although this is easily handled in base (as shown earlier), it is more clearly accomplished using select in dplyr.
+
+```{r}
+scoringDat = statsTab %>% 
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
+
+summary(scoringDat)
+
+```
+
+That works great, but now we need to drop some of those variables to look at correlations.
+
+```{r}
+scoringDat %>% 
+  select(-Player, -Tm, -Pos) %>% 
+  na.omit %>% 
+  cor %T>%
+  corrplot::corrplot.mixed()
+```
+
+
+
 # Reshaping Data
 ## Reshaping Data
+
+Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
+
+Reshaping can take many forms. You might need to reshape your data from wide format to long format.
+
+Or, maybe you need to split or combine variables.
+
+Either way, R has you covered
+
+## Wide to Long
+
+We are going to load up the reshape2 package to make this data go from wide to long
+
+```{r}
+
+library(reshape2); library(ggvis)
+
+ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
+                             axis = list(stroke = "white"))
+
+statsTab %>% 
+  select(Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
+  rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
+  mutate(threePointPerc = threePointPerc/100) %>% 
+  melt(., id.vars = "Tm", 
+       measure.vars = c("fieldGoalPerc", "threePointPerc", "twoPointPerc", 
+                        "trueShooting", "effectiveFG"), 
+       variable.name = "vitalInfo") %>%
+  group_by(Tm, vitalInfo) %>%
+  summarize(avg = mean(value)) %>% 
+  ggvis(~Tm, ~avg) %>% 
+  group_by(vitalInfo) %>%
+  layer_points(fill = ~vitalInfo) %>% 
+  group_by(vitalInfo) %>% 
+  layer_lines(stroke = ~vitalInfo) %>% 
+  add_axis("x", properties = ggvisCleanTheme)
+```
 
 # Grouping and Summarizing Data
 ## Grouping and Summarizing Data
 
-# Generating New Data
-## Generating New Data
+When working with data, a very common task is to look at descriptive statistics for various groups.
+
+Using the various functions within dplyr and magrittr makes this very easy.
+
+```{r}
+
+scoringDat %>% 
+  group_by(Pos) %>% 
+  summarize(meanTrueShooting = mean(trueShooting, na.rm = TRUE))
+
+scoringDat %>% 
+  filter(Pos == "C") %>% 
+  arrange(desc(trueShooting)) %>% 
+  filter(PTS > median(PTS)) %>% 
+  select(trueShooting, PTS) %T>%
+  plot() %$% 
+  cor(trueShooting, PTS)
+
+```
+
+
+
 
 # Your Turn
 ## Your Turn
