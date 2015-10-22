@@ -139,9 +139,10 @@ wikiURL %>%
                    popup=  ~paste(City, paste0(popDiff, '%')))
 ```
 
-And the result...
 
-##
+
+## And the result...
+
 ```{r, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 # packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
 # sapply(packs, library, character.only=T)
