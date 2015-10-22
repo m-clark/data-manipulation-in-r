@@ -204,7 +204,7 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 
 As is often the case, there are times when we want to calculate new variables based upon existing variable.
 
-```{r}
+```{r, eval=FALSE}
 library(rvest); library(dplyr); library(magrittr); library(tidyr)
 
 statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
@@ -231,7 +231,7 @@ statsTab %>% arrange(desc(effectiveFG)) %>% head
 
 Sometimes we want to combine (or split) variables
 
-```{r}
+```{r, eval=FALSE}
 statsTab %>% 
   unite_("posTeam", c("Pos", "Tm"))
 ```
@@ -243,7 +243,7 @@ We will go a bit deeper into this in bit.
 
 Recall this bit of code?
 
-```{r}
+```{r, eval=FALSE}
 statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
   html_nodes("table#totals") %>% 
   html_table %>% 
@@ -255,13 +255,13 @@ You will notice the filter line at the end.
 
 We sometimes want to see a very specific portion of the data.
 
-```{r}
+```{r, eval=FALSE}
 statsTab %>% 
   filter(Age > 35, Pos == "SF" | Pos == "PF")
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 statsTab %>% 
   unite_("posTeam", c("Pos", "Tm")) %>% 
   filter(posTeam == "PF_SAS") %>% 
@@ -275,7 +275,7 @@ There are times when you do not want to look at the entire dataset, but instead 
 
 Although this is easily handled in base (as shown earlier), it is more clearly accomplished using select in dplyr.
 
-```{r}
+```{r, eval=FALSE}
 scoringDat = statsTab %>% 
   select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
 
@@ -285,7 +285,7 @@ summary(scoringDat)
 
 That works great, but now we need to drop some of those variables to look at correlations.
 
-```{r}
+```{r, eval=FALSE}
 scoringDat %>% 
   select(-Player, -Tm, -Pos) %>% 
   na.omit %>% 
@@ -310,7 +310,7 @@ Either way, R has you covered
 
 We are going to load up the reshape2 package to make this data go from wide to long
 
-```{r}
+```{r, eval=FALSE}
 
 library(reshape2); library(ggvis)
 
@@ -342,7 +342,7 @@ When working with data, a very common task is to look at descriptive statistics 
 
 Using the various functions within dplyr and magrittr makes this very easy.
 
-```{r}
+```{r, eval=FALSE}
 
 scoringDat %>% 
   group_by(Pos) %>% 

@@ -53,7 +53,8 @@ slides > slide:not(.nobackground)::after {
 within a code chunk*/
 
 .prettyprint .pln, .prettyprint .pun, .prettyprint .opn, .prettyprint .clo,
-.prettyprint .str, .prettyprint .lit, .prettyprint .atv{
+.prettyprint .str, .prettyprint .lit, .prettyprint .atv, .prettyprint .tag, 
+.prettyprint .kwd {
   font-size: 10px;
 }
 
