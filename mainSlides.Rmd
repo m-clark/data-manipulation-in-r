@@ -17,8 +17,6 @@ library(dplyr); library(magrittr)
 
 # Data Discovery in R
 
-##
-
 
 ## Goals
 - Introduce newer approaches to data wranging, scrubbing, manipulation etc.
@@ -141,7 +139,7 @@ wikiURL %>%
                    popup=  ~paste(City, paste0(popDiff, '%')))
 ```
 
-And voila...
+And the result...
 
 ##
 ```{r, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
