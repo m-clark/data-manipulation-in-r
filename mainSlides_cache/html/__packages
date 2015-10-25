@@ -1,0 +1,8 @@
+base
+dplyr
+magrittr
+xml2
+rvest
+stringr
+leaflet
+tidyr

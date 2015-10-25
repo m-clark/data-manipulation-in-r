@@ -63,7 +63,7 @@ within a code chunk*/
 
 pre {
   box-sizing: border-box;
-  font-family: "Source Code Pro", "Courier New", monospace;
+  font-family: "Inconsolata", "Source Code Pro", "Consolas", "Courier New", monospace;
   left: -50px; /* This changes where the code chunk box actually starts */ 
   padding: 10px 0 10px 60px; /* Change the last value here to move the text left or right */
   position: relative;

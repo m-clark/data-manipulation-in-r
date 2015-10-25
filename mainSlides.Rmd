@@ -61,10 +61,16 @@ library(dplyr); library(magrittr)
 - Tedious, or typically two steps just to get the columns you want.
 
 ```{r, eval=FALSE, echo=TRUE}
+# numeric indexes; not conducive to readibility or reproducibility
 newData = oldData[,c(1,2,3,4, etc.)]
+
+# explicitly by name; fine if only a handful
 newData = oldData[,c('X1', 'X2', etc.)]
+
+# two step with grep; regex difficult to read/understand
 cols = c(paste0('X', 1:10), 'Y1', 'Y2', grep(colnames(oldData), '^XYZ', value=T))
 newData = oldData[,cols]
+# or via subset
 newData = subset(oldData, select = cols)
 ```
 
@@ -89,7 +95,7 @@ newData = oldData %>%
 
 ## An alternative
 
-- Even though the former is probably more concise than many would do on their own, it still is: 
+- Even though the initial base R approach depicted is probably more concise than many would do on their own, it still is: 
     - noisier
     - less legible
     - less amenable to additional data changes
@@ -110,27 +116,27 @@ wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_populat
 
 # Let's go!
 wikiURL %>% 
-  html %>% 
-  html_node(css='.wikitable.sortable') %>% 
-  html_table %>% 
-  sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%
-  data.frame %>%  
-  mutate(City = str_replace(City, '\\[(.*?)\\]', ''),
-         latlon = sapply(str_split(Location, '/'), last), 
-         latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
-         lat = sapply(latlon, first),
-         lon = sapply(latlon, nth, 2), 
-         population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),
-         population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
-         popDiff  = round(population2014/population2010 - 1, 2)*100) %>% 
+  html %>%                                                                          # parse the html
+  html_node(css='.wikitable.sortable') %>%                                          # grab a class of object
+  html_table %>%                                                                    # convert table to data.frame
+  sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%                 # repair encoding; makes a matrix
+  data.frame %>%                                                                    # back to df
+  mutate(City = str_replace(City, '\\[(.*?)\\]', ''),                               # remove footnotes
+         latlon = sapply(str_split(Location, '/'), last),                           # split up location (3 parts)
+         latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'),                   # grab any that start with - or number
+         lat = sapply(latlon, first),                                               # grab latitudes
+         lon = sapply(latlon, nth, 2),                                              # grab longitude
+         population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),     # remove commas from numbers (why do people do this?)
+         population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),       # same for 2010
+         popDiff  = round(population2014/population2010 - 1, 2)*100) %>%            # create percentage difference
 ```
 
 ## Cont'd.
 
 ```{r, eval=FALSE, echo=TRUE}
-  select(-latlon, -Location) %>% 
-  filter(as.numeric(as.character(X2014.rank)) <= 50)  %>% 
-  leaflet %>% 
+  select(-latlon, -Location) %>%                                                    # remove stuff we wouldn't ever use
+  filter(as.numeric(as.character(X2014.rank)) <= 50)  %>%                           # top 50
+  leaflet %>%                                                                       # map out
   addProviderTiles("CartoDB.DarkMatterNoLabels") %>% 
   setView(-94, 35, zoom = 4) %>% 
   addCircleMarkers(~lon, ~lat,
@@ -143,17 +149,17 @@ wikiURL %>%
 
 ## And the result...
 
-```{r, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 # packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
 # sapply(packs, library, character.only=T)
-library(magrittr); library(rvest); library(dplyr); library(dplyr); library(stringr)
+library(magrittr); library(rvest); library(dplyr); library(stringr)
 library(leaflet)
 
 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population' %>% 
   html %>% 
   html_node(css='.wikitable.sortable') %>% 
   html_table %>% 
-  sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%
+  sapply(function(x) repair_encoding(as.character(x), 'UTF-8'), simplify=F) %>%
   data.frame %>%  
   mutate(City = str_replace(City, '\\[(.*?)\\]', ''),
          latlon = sapply(str_split(Location, '/'), last), 
@@ -169,7 +175,7 @@ library(leaflet)
   addProviderTiles("CartoDB.DarkMatterNoLabels") %>% 
   setView(-94, 35, zoom = 4) %>% 
   addCircleMarkers(~lon, ~lat,
-                   radius=  ~scales::rescale(popDiff, c(1, 10)),
+                   radius=  ~scales::rescale(popDiff, c(2, 11)),
                    fillColor=  ~colorNumeric(palette = c('Red', 'White', 'Navy'), popDiff)(popDiff), 
                    stroke = FALSE, fillOpacity = .85,
                    popup=  ~paste(City, paste0(popDiff, '%')))
@@ -189,6 +195,18 @@ library(leaflet)
 
 # A provocation
 
+```{r, eval=F, echo=T}
+c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
+{
+  .. <-  . %>%
+    if (length(.) == 1)  .
+    else paste(.[1], '%>%', ..(.[-1]))
+  ..(.)
+} 
+```
+
+# A provocation
+
 ```{r, eval=T, echo=T}
 c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 {
@@ -202,9 +220,9 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 # Generating New Data
 ## Generating New Data
 
-As is often the case, there are times when we want to calculate new variables based upon existing variable.
+As is often the case, there are times when we want to calculate new variables based upon existing ones.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE, cache=TRUE, message=FALSE}
 library(rvest); library(dplyr); library(magrittr); library(tidyr)
 
 statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
@@ -213,27 +231,35 @@ statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_total
   data.frame %>% 
   filter(Rk != "Rk")
 
-statsTab[, 6:30] = sapply(statsTab[, 6:30], as.numeric)
+statsTab %<>% mutate_each(funs(as.numeric), -Player, -Pos, -Tm)
 
-glimpse(statsTab)
+# glimpse(statsTab)
   
 statsTab = statsTab %>% 
   mutate(trueShooting = round(PTS / (2 * (FGA + (.44 * FTA))), 2),
          effectiveFG = round((FG + (.5 * X3P)) / FGA, 2), 
          shootingDif = trueShooting - FG.)
 
-summary(statsTab)
+# summary(statsTab)
+```
 
+## Generating New Data
+
+As is often the case, there are times when we want to calculate new variables based upon existing ones.
+
+```{r, R.options=list(width=120)}
 statsTab %>% arrange(desc(effectiveFG)) %>% head
-
 ```
 
 
-Sometimes we want to combine (or split) variables
+Sometimes we want to combine (or split) variables...
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
+library(tidyr)
 statsTab %>% 
-  unite_("posTeam", c("Pos", "Tm"))
+  unite("posTeam", Pos, Tm) %>% 
+  select(1:5) %>% 
+  head
 ```
 
 We will go a bit deeper into this in bit.
@@ -294,7 +320,6 @@ scoringDat %>%
 ```
 
 
-
 # Reshaping Data
 ## Reshaping Data
 
@@ -304,7 +329,7 @@ Reshaping can take many forms. You might need to reshape your data from wide for
 
 Or, maybe you need to split or combine variables.
 
-Either way, R has you covered
+Either way, R has you covered.
 
 ## Wide to Long
 
@@ -321,10 +346,8 @@ statsTab %>%
   select(Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
   rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
   mutate(threePointPerc = threePointPerc/100) %>% 
-  melt(., id.vars = "Tm", 
-       measure.vars = c("fieldGoalPerc", "threePointPerc", "twoPointPerc", 
-                        "trueShooting", "effectiveFG"), 
-       variable.name = "vitalInfo") %>%
+  gather(key = 'vitalInfo', value = 'value', fieldGoalPerc, threePointPerc, twoPointPerc, 
+                        trueShooting, effectiveFG) %>%
   group_by(Tm, vitalInfo) %>%
   summarize(avg = mean(value)) %>% 
   ggvis(~Tm, ~avg) %>% 
