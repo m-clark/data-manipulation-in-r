@@ -320,6 +320,16 @@ scoringDat %>%
 ```
 
 
+Sometimes, we have a lot of variables to select. If they have a common naming scheme (as they should), 
+this becomes very easy.
+
+```{r, eval=FALSE}
+statsTab %>% 
+  select(Player, contains("3P"), ends_with("RB")) %>% 
+  arrange(desc(X3P.1, TRB)) %>% 
+  head
+```
+
 # Reshaping Data
 ## Reshaping Data
 

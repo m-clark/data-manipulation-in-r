@@ -54,7 +54,7 @@ within a code chunk*/
 
 .prettyprint .pln, .prettyprint .pun, .prettyprint .opn, .prettyprint .clo,
 .prettyprint .str, .prettyprint .lit, .prettyprint .atv, .prettyprint .tag, 
-.prettyprint .kwd {
+.prettyprint .kwd, .prettyprint .lang-r {
   font-size: 10px;
 }
 
@@ -68,4 +68,12 @@ pre {
   padding: 10px 0 10px 60px; /* Change the last value here to move the text left or right */
   position: relative;
   width: 106%; /* This changes where the code chunk box ends on the right side */
+}
+
+/* This will change the font size for output */
+
+article.smaller pre {
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 20px;
 }
