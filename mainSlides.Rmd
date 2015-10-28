@@ -5,7 +5,7 @@ author: ""
 date: "Fall, 2015"
 output: 
   ioslides_presentation: 
-    smaller: yes
+    smaller: no
     widescreen: yes
     css: slideStyles.css
 ---
@@ -45,7 +45,7 @@ library(dplyr); library(magrittr)
     
     
 
-# Newer approaches to data wrangling
+# Newer approaches to <br> data wrangling
 ## Newer approaches to data wrangling
 - A starting example
 
@@ -205,7 +205,7 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 } 
 ```
 
-# A provocation
+# 
 
 ```{r, eval=T, echo=T}
 c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
@@ -217,42 +217,78 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 } 
 ```
 
+
+# Your turn
+## Your turn
+- Use a base R dataset, for example iris or state.x77
+- As a simple exercise, pipe to something like the summary or cor (if numeric) as follows:
+
+```{r, eval=FALSE}
+data %>% 
+  function
+```
+
+- If the function you use, has additional arguments you want to try, put those arguments in parentheses
+
+```{r, eval=FALSE}
+data %>% 
+  function(arg='blah')
+```
+
+Note that Ctrl+Shft+m is the shortcut to make the pipe.
+
+
 # Generating New Data
 ## Generating New Data
 
-As is often the case, there are times when we want to calculate new variables based upon existing ones.
+As is often the case, there are times when we want to calculate new variables based upon existing ones, or perhaps make changes to ones we have.
 
-```{r, eval=TRUE, cache=TRUE, message=FALSE}
+We will typically use mutate or transmute for this.
+- mutate appends to current data
+- mutate_each will apply a function over multiple columns
+- transmute will return only the newly data
+
+
+```{r, eval=TRUE, cache=TRUE, message=FALSE, echo=-1}
 library(rvest); library(dplyr); library(magrittr); library(tidyr)
-
 statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
   html_nodes("table#totals") %>% 
   html_table %>% 
   data.frame %>% 
   filter(Rk != "Rk")
 
-statsTab %<>% mutate_each(funs(as.numeric), -Player, -Pos, -Tm)
+# data is currently all character strings
+statsTab %<>% 
+  mutate_each(funs(as.numeric), -Player, -Pos, -Tm)   # convert relevant data to numeric
 
 # glimpse(statsTab)
-  
+```
+
+## Generating New Data
+
+- A common situation, creating composites of existing variables.
+
+```{r, cache=TRUE}
 statsTab = statsTab %>% 
   mutate(trueShooting = round(PTS / (2 * (FGA + (.44 * FTA))), 2),
          effectiveFG = round((FG + (.5 * X3P)) / FGA, 2), 
          shootingDif = trueShooting - FG.)
 
-# summary(statsTab)
+summary(select(statsTab, shootingDif))
 ```
+
+
 
 ## Generating New Data
 
-As is often the case, there are times when we want to calculate new variables based upon existing ones.
 
-```{r, R.options=list(width=120)}
+```{r, R.options=list(width=120), eval=FALSE, echo=FALSE}
+## NOT SURE WHAT THIS WAS ABOUT
 statsTab %>% arrange(desc(effectiveFG)) %>% head
 ```
 
 
-Sometimes we want to combine (or split) variables...
+- Sometimes we want to combine (or split) variables...
 
 ```{r, eval=TRUE}
 library(tidyr)
@@ -262,12 +298,12 @@ statsTab %>%
   head
 ```
 
-We will go a bit deeper into this in bit.
+- We will go a bit deeper into this in bit.
 
 # Filtering Observations
 ## Filtering Observations
 
-Recall this bit of code?
+- Recall this bit of code?
 
 ```{r, eval=FALSE}
 statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
@@ -277,9 +313,9 @@ statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_total
   filter(Rk != "Rk")
 ```
 
-You will notice the filter line at the end.
+- You will notice the filter line at the end.
 
-We sometimes want to see a very specific portion of the data.
+- We sometimes want to see a very specific portion of the data.
 
 ```{r, eval=FALSE}
 statsTab %>% 
@@ -297,31 +333,33 @@ statsTab %>%
 # Selecting Variables
 ## Selecting Variables
 
-There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+- There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
 
-Although this is easily handled in base (as shown earlier), it is more clearly accomplished using select in dplyr.
+- Although this is easily handled in base (as shown earlier), it can more clearly accomplished using select in dplyr
+
+- The following lets us look at the data clearly, without having to create objects, use quotes etc.
+
+```{r, eval=FALSE}
+statsTab %>% 
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS) %>% 
+  summary
+```
+
+## Selecting Variables
+- That works great, but now we need to drop some of those variables to look at correlations.
 
 ```{r, eval=FALSE}
 scoringDat = statsTab %>% 
   select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
 
-summary(scoringDat)
-
-```
-
-That works great, but now we need to drop some of those variables to look at correlations.
-
-```{r, eval=FALSE}
 scoringDat %>% 
   select(-Player, -Tm, -Pos) %>% 
-  na.omit %>% 
-  cor %T>%
+  cor(use='complete') %>%
   corrplot::corrplot.mixed()
 ```
 
-
-Sometimes, we have a lot of variables to select. If they have a common naming scheme (as they should), 
-this becomes very easy.
+## Selecting Variables
+- Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
 
 ```{r, eval=FALSE}
 statsTab %>% 
@@ -333,47 +371,66 @@ statsTab %>%
 # Reshaping Data
 ## Reshaping Data
 
-Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
+- Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
 
-Reshaping can take many forms. You might need to reshape your data from wide format to long format.
+- Reshaping can take many forms. You might need to reshape your data from wide format to long format.
 
-Or, maybe you need to split or combine variables.
+- Or, maybe you need to split or combine variables.
 
-Either way, R has you covered.
+- Either way, R has you covered.
 
 ## Wide to Long
 
-We are going to load up the reshape2 package to make this data go from wide to long
+- We are going to use the tidyr package to make this data go from wide to long.
+- The function of note is gather
+    - key is the new variable name
+    - value is the name of the 
 
-```{r, eval=FALSE}
+```{r, eval=TRUE, cache=TRUE}
+library(tidyr)
 
-library(reshape2); library(ggvis)
-
-ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
-                             axis = list(stroke = "white"))
-
-statsTab %>% 
+statsTabLong = statsTab %>% 
   select(Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
   rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
   mutate(threePointPerc = threePointPerc/100) %>% 
-  gather(key = 'vitalInfo', value = 'value', fieldGoalPerc, threePointPerc, twoPointPerc, 
-                        trueShooting, effectiveFG) %>%
-  group_by(Tm, vitalInfo) %>%
-  summarize(avg = mean(value)) %>% 
-  ggvis(~Tm, ~avg) %>% 
-  group_by(vitalInfo) %>%
-  layer_points(fill = ~vitalInfo) %>% 
-  group_by(vitalInfo) %>% 
-  layer_lines(stroke = ~vitalInfo) %>% 
-  add_axis("x", properties = ggvisCleanTheme)
+  gather(key = 'vitalInfo', value = 'value', -Tm) 
+
+statsTabLong %>% head
+
+# save vis for later
+# 
+# ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
+#                              axis = list(stroke = "white"))
+# 
+#   group_by(Tm, vitalInfo) %>%
+#   summarize(avg = mean(value)) %>% 
+#   ggvis(~Tm, ~avg) %>% 
+#   group_by(vitalInfo) %>%
+#   layer_points(fill = ~vitalInfo) %>% 
+#   group_by(vitalInfo) %>% 
+#   layer_lines(stroke = ~vitalInfo) %>% 
+#   add_axis("x", properties = ggvisCleanTheme)
 ```
+
+
+## Long to wide
+
+- Going the reverse direction
+
+```{r long2wide, cache=TRUE, eval=FALSE}
+## BROKEN AT PRESENT, HADLEY SOLUTION NOT VIABLE, EVAL FALSE FOR NOW
+statsTabLong %>%
+  spread(vitalInfo, value) %>% 
+  head
+```
+
 
 # Grouping and Summarizing Data
 ## Grouping and Summarizing Data
 
-When working with data, a very common task is to look at descriptive statistics for various groups.
+- When working with data, a very common task is to look at descriptive statistics for various groups.
 
-Using the various functions within dplyr and magrittr makes this very easy.
+- Using the various functions within dplyr and magrittr makes this very easy.
 
 ```{r, eval=FALSE}
 
