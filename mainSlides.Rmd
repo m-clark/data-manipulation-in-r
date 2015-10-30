@@ -19,14 +19,14 @@ library(dplyr); library(magrittr)
 ## Goals
 - Introduce newer approaches to data wranging, scrubbing, manipulation etc.
 
-- Show the benefits of piping code
+- Show the benefits of <span class='emph'>*piping*</span> code
 
 - Put it all together with some newer visualization packages 
 
 
 ## Outline 
 - Newer approaches to data wrangling
-    - Introduction to plyr dplyr and tidyr
+    - Introduction to <span class='pack'>plyr</span> <span class='pack'>dplyr</span> and <span class='pack'>tidyr</span>
     - Subsetting rows
     - Subsetting columns
     - Reshaping data
@@ -34,11 +34,11 @@ library(dplyr); library(magrittr)
     - Grouping and summarizing
 
 - Nothin's gonna stop the flow
-    - Piping with the magrittr package
+    - Piping with the <span class='pack'>magrittr</span> package
 
 - Quick interactive visualizations
-    - ggvis
-    - htmlwidgets
+    - <span class='pack'>ggvis</span>
+    - <span class='pack'>htmlwidgets</span>
     
     
 
@@ -46,10 +46,10 @@ library(dplyr); library(magrittr)
 ## Newer approaches to data wrangling
 - A starting example
 
-- Let's say we want to select from our data only the following variables
-    - The variables X1:X10, which are not all together, and there are many more 'X' columns
-    - The variables var1 and var2, which are the only 'var' variables in the data
-    - Any variable that starts with 'XYZ'
+- Let's say we want to select from our data the following variables
+    - The variables **X1:X10**, which are not all together, and there are many more *X* columns
+    - The variables **var1** and **var2**, which are the only *var* variables in the data
+    - Any variable that starts with **XYZ**
     
 - How might we go about this?
 
@@ -75,7 +75,7 @@ newData = subset(oldData, select = cols)
 
 
 ## More
-- What if you also want observations where Z is 'Yes', Q is 'No', and only the last 50 of those results, ordered by var1 (descending)?
+- What if you also want observations where **Z** is **Yes**, Q is **No**, and only the last 50 of those results, ordered by **var1** (descending)?
 
 ```{r baseRexample2, eval=FALSE}
 # three operations and overwriting or creating new objects if we want clarity
@@ -86,6 +86,7 @@ newData = newdata[order(newdata$var1, decreasing=T),]
 
 
 - And this is for fairly straightforward operations.
+
 
 ## An alternative
 
@@ -108,9 +109,8 @@ newData = oldData %>%
     - often requires new objects (even if we just want to explore)
 
 
+
 # Another example...
-
-
 ## Start with a string, end with a map
 
 ```{r wikileafletNoEval, eval=FALSE, echo=-c(1:6)}
@@ -154,7 +154,6 @@ wikiURL %>%
 ```
 
 
-
 ## And the result...
 
 ```{r wikileaflet, eval=TRUE, echo=FALSE}
@@ -192,17 +191,18 @@ library(leaflet)
 
 ## 
 
->- In the interests of your own code, the previous is not recommended.
+- In the interests of your own code, the previous is not recommended.
 
 >- It serves as an illustration of what's possible.
 
 
 ## Newer approaches to data wrangling
 - Over the past couple of years, a handful of packages have been put out that make data management within R noticeably easier
-- We will focus on plyr, dplyr, and tidyr
-- But others, e.g. data.table, take different approaches and may be useful as well
+- We will focus on <span class='pack'>plyr</span>, <span class='pack'>dplyr</span>, and <span class='pack'>tidyr</span>
+- But others, e.g. <span class='pack'>data.table</span>, take different approaches and may be useful as well
 - Newer visualization packages take advantage of these approaches to data manipulation
     - Makes it easier to explore your data visually
+
 
 
 # A provocation
@@ -230,51 +230,63 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 ```
 
 
+
 # Your turn
 ## Your turn
-- Use a base R dataset
+- Let's get to it!
+
+>- Use a base R dataset
     - Examples: iris, mtcars, faithful or state.x77
-- As a simple exercise, pipe to something like the summary or cor (if all numeric) as follows:
+    
+>- As an exercise, pipe to something like the <span class='func'>summary</span>, <span class='func'>plot</span> or <span class='func'>cor</span> (if all numeric) as follows:
 
 ```{r yourturnPipe, eval=FALSE}
 data %>% 
   function
 ```
 
-- If the function you use has additional arguments you want to try, put those arguments in parentheses
+>- If the function you use has additional arguments you want to try, put those arguments in parentheses
 
 ```{r pipewithargs, eval=FALSE}
 data %>% 
   function(arg='blah')
 ```
-
 Note that Ctrl+Shft+m is the shortcut to make the %>% pipe.
 
+# Data Wrangling
 
 # Generating New Data
 ## Generating New Data
 
 As is often the case, there are times when we want to calculate new variables based upon existing ones, or perhaps make changes to ones we have.
 
-We will typically use mutate or transmute for this.
-- mutate appends to current data
-- mutate_each will apply a function over multiple columns
-- transmute will return only the newly data
+We can use mutate or transmute for this.
 
+- <span class='func'>mutate</span> appends to current data
+- <span class='func'>mutate_each</span> will apply a function over multiple columns
+- <span class='func'>transmute</span> will return only the newly created data
 
-```{r basketballDataScrape, eval=TRUE, cache=TRUE, message=FALSE, echo=-1}
+First, let's scrape some data:
+
+```{r basketballDataScrape, cache=TRUE, message=FALSE, echo=-1}
 library(rvest); library(dplyr); library(magrittr); library(tidyr)
-statsTab = read_html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
+url = "http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons"
+bball = read_html(url) %>% 
   html_nodes("table#totals") %>% 
   html_table %>% 
   data.frame %>% 
   filter(Rk != "Rk")
+```
 
-# data is currently all character strings
-statsTab %<>% 
-  mutate_each(funs(as.numeric), -Player, -Pos, -Tm)   # convert relevant data to numeric
+## Generating New Data
+- The data is currently all character strings.
+- We'll use <span class='func'>mutate_each</span> to make every column numeric except for Player, Pos, and Tm.
 
-# glimpse(statsTab)
+```{r mutateach, cache=TRUE}
+bball %<>% 
+  mutate_each(funs(as.numeric), -Player, -Pos, -Tm)   
+
+glimpse(bball)
 ```
 
 
@@ -283,44 +295,101 @@ statsTab %<>%
 - A common situation, creating composites of existing variables.
 
 ```{r mutate, cache=TRUE}
-statsTab = statsTab %>% 
+bball = bball %>% 
   mutate(trueShooting = round(PTS / (2 * (FGA + (.44 * FTA))), 2),
          effectiveFG = round((FG + (.5 * X3P)) / FGA, 2), 
          shootingDif = trueShooting - FG.)
 
-summary(select(statsTab, shootingDif))
+summary(select(bball, shootingDif))  # select and others don't have to be piped to use
 ```
-
 
 
 ## Generating New Data
 
-
-```{r, R.options=list(width=120), eval=FALSE, echo=FALSE}
-## NOT SURE WHAT THIS WAS ABOUT
-statsTab %>% arrange(desc(effectiveFG)) %>% head
-```
-
-
 - Sometimes we want to combine (or split) variables...
+- <span class='func'>unite</span> creates a new variable as the string combination of others.
+    - essentially <span class='func'>paste</span>
+- <span class='func'>separate</span> does the opposite.
 
-```{r tidyrUnite, eval=TRUE}
+```{r tidyrUnite, cache=TRUE}
 library(tidyr)
-statsTab %>% 
+bball %>% 
   unite("posTeam", Pos, Tm) %>% 
   select(1:5) %>% 
   head
 ```
 
-- We will go a bit deeper into this in bit.
+
+## Generating New Data
+- Separate player into first and last names based on where the space occurs.
+
+```{r tidyrSpread, cache=TRUE}
+library(tidyr)
+bball %>% 
+  separate(Player, into=c('firstName', 'lastName'), sep=' ') %>% 
+  select(1:5) %>% 
+  head
+```
+
+# Your turn
+## Your turn
+- Data: state.x77
+
+0. Convert to <span class='func'>data.frame</span>
+1. Create a variable that's the <span class='func'>log</span> of population
+2. Create **curLifeExp** as Life Expectancy + 5
+3. summarize the data
+
+
+# Selecting Variables
+## Selecting Variables
+
+- There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+
+- Although this is easily handled in base R (as shown earlier), it can often more clearly accomplished using select in <span class='pack'>dplyr</span>
+
+- The following lets us look at the data clearly, without having to create objects, use quotes etc.
+
+```{r select1, cache=TRUE}
+bball %>% 
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS) %>% 
+  summary
+```
+
+
+## Selecting Variables
+- That works great, but now we need to drop some of those variables to look at correlations.
+
+```{r select2, cache=TRUE}
+scoringDat = bball %>% 
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
+
+scoringDat %>% 
+  select(-Player, -Tm, -Pos) %>% 
+  cor(use='complete') %>% 
+  round(2)
+```
+
+
+## Selecting Variables
+- Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
+
+```{r select3, cache=TRUE}
+bball %>% 
+  select(Player, contains("3P"), ends_with("RB")) %>% 
+  arrange(desc(X3P.1, TRB)) %>% 
+  head
+```
+
+
 
 # Filtering Observations
 ## Filtering Observations
 
 - Recall this bit of code?
 
-```{r statstabRecall, eval=FALSE}
-statsTab = html("http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons") %>% 
+```{r bballRecall, eval=FALSE}
+bball = html(url) %>% 
   html_nodes("table#totals") %>% 
   html_table %>% 
   data.frame %>% 
@@ -331,56 +400,49 @@ statsTab = html("http://www.basketball-reference.com/leagues/NBA_2015_totals.htm
 
 - We sometimes want to see a very specific portion of the data.
 
-```{r filter, eval=FALSE}
-statsTab %>% 
+
+## Filtering Observations
+>- <span class='func'>filter</span> returns rows with matching conditions.
+>- <span class='func'>slice</span> allows for a numeric indexing approach.
+
+>- Say we want too look at forwards over the age of 35...
+
+```{r filter1, eval=FALSE}
+bball %>% 
   filter(Age > 35, Pos == "SF" | Pos == "PF")
 ```
 
+>- or the first 10 rows...
 
-```{r uniteFilterArrange, eval=FALSE}
-statsTab %>% 
+```{r filter2, eval=FALSE}
+bball %>% 
+  slice(1:10)
+```
+
+
+## Filtering Observations
+- This can be done with things that are created on the fly...
+
+```{r uniteFilterArrange, cache=TRUE}
+bball %>% 
   unite_("posTeam", c("Pos", "Tm")) %>% 
   filter(posTeam == "PF_SAS") %>% 
-  arrange(desc(PTS/PF))
+  arrange(desc(PTS/PF)) %>% 
+  select(1:10)
 ```
 
-# Selecting Variables
-## Selecting Variables
+# Your turn
+## Your turn
+- Select and filter exercise
+- bonus filter if product > some amount(without mutate)
 
-- There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+- A brief exercise:
 
-- Although this is easily handled in base (as shown earlier), it can more clearly accomplished using select in dplyr
+1. filter the iris data set to only the `r "virginica"` species
+2. show only **Petal.Length** and **Petal.Width** var
+3. bonus: redo, but instead filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
 
-- The following lets us look at the data clearly, without having to create objects, use quotes etc.
 
-```{r select1, eval=FALSE}
-statsTab %>% 
-  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS) %>% 
-  summary
-```
-
-## Selecting Variables
-- That works great, but now we need to drop some of those variables to look at correlations.
-
-```{r select2, eval=FALSE}
-scoringDat = statsTab %>% 
-  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
-
-scoringDat %>% 
-  select(-Player, -Tm, -Pos) %>% 
-  cor(use='complete') %>%
-  corrplot::corrplot.mixed()
-```
-
-## Selecting Variables
-- Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
-
-```{r select3, eval=FALSE}
-statsTab %>% 
-  select(Player, contains("3P"), ends_with("RB")) %>% 
-  arrange(desc(X3P.1, TRB)) %>% 
-  head
-```
 
 # Reshaping Data
 ## Reshaping Data
@@ -395,35 +457,21 @@ statsTab %>%
 
 ## Wide to Long
 
-- We are going to use the tidyr package to make this data go from wide to long.
+- We are going to use the <span class='pack'>tidyr</span> package to make this data go from wide to long.
 - The function of note is gather
     - key is the new variable name
     - value is the name of the 
 
-```{r wide2long, eval=TRUE, cache=TRUE}
+```{r wide2long, eval=TRUE, cache=TRUE, echo=-c(1:2)}
 library(tidyr)
 
-statsTabLong = statsTab %>% 
+bballLong = bball %>% 
   select(Player, Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
   rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
   mutate(threePointPerc = threePointPerc/100) %>% 
   gather(key = 'vitalInfo', value = 'value', -Tm, -Player) 
 
-statsTabLong %>% head
-
-# save vis for later
-# 
-# ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
-#                              axis = list(stroke = "white"))
-# 
-#   group_by(Tm, vitalInfo) %>%
-#   summarize(avg = mean(value)) %>% 
-#   ggvis(~Tm, ~avg) %>% 
-#   group_by(vitalInfo) %>%
-#   layer_points(fill = ~vitalInfo) %>% 
-#   group_by(vitalInfo) %>% 
-#   layer_lines(stroke = ~vitalInfo) %>% 
-#   add_axis("x", properties = ggvisCleanTheme)
+bballLong %>% head
 ```
 
 
@@ -432,7 +480,7 @@ statsTabLong %>% head
 - Going the reverse direction
 
 ```{r long2wide, cache=TRUE, eval=TRUE}
-statsTabLong %>%
+bballLong %>%
   spread(vitalInfo, value) %>% 
   head
 ```
@@ -470,11 +518,11 @@ Using one pipe sequence
 
 1. convert state.x77 (a base R object) to a data frame
 2. create a new variable called 'Region' that is equal to state.region
-2. create a new variable called 'State' that is equal to state.name
-3. select only if Population is greater than 1000 (thousands)
-3. select Region and variables beginning with I
-4. group by region
-5. summarise Income, Illiteracy or Both, using the mean function
+3. create a new variable called 'State' that is equal to state.name
+4. select only if Population is greater than 1000 (thousands)
+5. select Region and variables beginning with I
+6. group by region
+7. summarise Income, Illiteracy or Both, using the mean function
 
 ## Your Turn
 ```{r yourturnDataManip, eval=FALSE}
@@ -631,7 +679,7 @@ x = rnorm(100)
 
 ```{r datatable}
 library(DT)
-datatable(select(statsTab, 1:5), rownames=F)
+datatable(select(bball, 1:5), rownames=F)
 ```
 
 ## ggvis
@@ -641,12 +689,12 @@ datatable(select(statsTab, 1:5), rownames=F)
 
 ```{r ggvis}
 library(ggvis)
-statsTabLong %>% head
+bballLong %>% head
 
 
 ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
                              axis = list(stroke = "white"))
-statsTabLong %>% 
+bballLong %>% 
   group_by(Tm, vitalInfo) %>%
   summarize(avg = mean(value)) %>% 
   ggvis(~Tm, ~avg) %>% 
@@ -663,7 +711,7 @@ statsTabLong %>%
 
 
 ## Wrap up
-
+Think of these functions as organizational tools.
 
 <table class='acknowledge'>
 <tr>
