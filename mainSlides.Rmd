@@ -37,7 +37,6 @@ library(dplyr); library(magrittr)
     - Piping with the magrittr package
 
 - Quick interactive visualizations
-    - Using *yr packages, piping and visualization
     - ggvis
     - htmlwidgets
     
@@ -54,6 +53,7 @@ library(dplyr); library(magrittr)
     
 - How might we go about this?
 
+
 ## Some base R approaches
 
 - Tedious, or typically two steps just to get the columns you want.
@@ -62,24 +62,30 @@ library(dplyr); library(magrittr)
 # numeric indexes; not conducive to readibility or reproducibility
 newData = oldData[,c(1,2,3,4, etc.)]
 
-# explicitly by name; fine if only a handful
+# explicitly by name; fine if only a handful; not pretty
 newData = oldData[,c('X1', 'X2', etc.)]
 
 # two step with grep; regex difficult to read/understand
 cols = c(paste0('X', 1:10), 'var1', 'var2', grep(colnames(oldData), '^XYZ', value=T))
 newData = oldData[,cols]
+
 # or via subset
 newData = subset(oldData, select = cols)
 ```
+
 
 ## More
 - What if you also want observations where Z is 'Yes', Q is 'No', and only the last 50 of those results, ordered by var1 (descending)?
 
 ```{r baseRexample2, eval=FALSE}
+# three operations and overwriting or creating new objects if we want clarity
 newData = newData[oldData$Z == 'Yes' & oldData$Q == 'No',]
 newData = tail(newData, 50)
 newData = newdata[order(newdata$var1, decreasing=T),]
 ```
+
+
+- And this is for fairly straightforward operations.
 
 ## An alternative
 
@@ -91,6 +97,7 @@ newData = oldData %>%
   arrange(desc(var1))
 ```
 
+
 ## An alternative
 
 - Even though the initial base R approach depicted is probably more concise than many would do on their own, it still is: 
@@ -98,12 +105,15 @@ newData = oldData %>%
     - less legible
     - less amenable to additional data changes
     - requires esoteric knowledge (e.g. regular expressions)
+    - often requires new objects (even if we just want to explore)
+
 
 # Another example...
 
+
 ## Start with a string, end with a map
 
-```{r wikileafletNoEval, eval=FALSE}
+```{r wikileafletNoEval, eval=FALSE, echo=-c(1:6)}
 packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
 sapply(packs, library, character.only=T)
 
@@ -114,7 +124,7 @@ wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_populat
 
 # Let's go!
 wikiURL %>% 
-  read_html %>%                                                                          # parse the html
+  read_html %>%                                                                     # parse the html
   html_node(css='.wikitable.sortable') %>%                                          # grab a class of object
   html_table %>%                                                                    # convert table to data.frame
   sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%                 # repair encoding; makes a matrix
@@ -182,14 +192,18 @@ library(leaflet)
 
 ## 
 
-- In the interests of your own code, the previous is not recommended.
-- It serves as an illustration of what's possible.
+>- In the interests of your own code, the previous is not recommended.
+
+>- It serves as an illustration of what's possible.
+
 
 ## Newer approaches to data wrangling
 - Over the past couple of years, a handful of packages have been put out that make data management within R noticeably easier
-- We will focus on plyr, dplyr, tidyr, and maybe reshape2
+- We will focus on plyr, dplyr, and tidyr
 - But others, e.g. data.table, take different approaches and may be useful as well
 - Newer visualization packages take advantage of these approaches to data manipulation
+    - Makes it easier to explore your data visually
+
 
 # A provocation
 
@@ -218,22 +232,23 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 
 # Your turn
 ## Your turn
-- Use a base R dataset, for example iris or state.x77
-- As a simple exercise, pipe to something like the summary or cor (if numeric) as follows:
+- Use a base R dataset
+    - Examples: iris, mtcars, faithful or state.x77
+- As a simple exercise, pipe to something like the summary or cor (if all numeric) as follows:
 
 ```{r yourturnPipe, eval=FALSE}
 data %>% 
   function
 ```
 
-- If the function you use, has additional arguments you want to try, put those arguments in parentheses
+- If the function you use has additional arguments you want to try, put those arguments in parentheses
 
 ```{r pipewithargs, eval=FALSE}
 data %>% 
   function(arg='blah')
 ```
 
-Note that Ctrl+Shft+m is the shortcut to make the pipe.
+Note that Ctrl+Shft+m is the shortcut to make the %>% pipe.
 
 
 # Generating New Data
@@ -620,25 +635,26 @@ datatable(select(statsTab, 1:5), rownames=F)
 ```
 
 ## ggvis
-- ggvis is a general purpose visualization packages, the successor to ggplot2
-    - ggplot2 is still great for static plots
+- ggvis is a general purpose visualization package
+  - the successor to ggplot2 to provide interactivity
+  - ggplot2 is still great for static plots
 
 ```{r ggvis}
+library(ggvis)
 statsTabLong %>% head
 
-# save vis for later
-# 
-# ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
-#                              axis = list(stroke = "white"))
-# 
-#   group_by(Tm, vitalInfo) %>%
-#   summarize(avg = mean(value)) %>% 
-#   ggvis(~Tm, ~avg) %>% 
-#   group_by(vitalInfo) %>%
-#   layer_points(fill = ~vitalInfo) %>% 
-#   group_by(vitalInfo) %>% 
-#   layer_lines(stroke = ~vitalInfo) %>% 
-#   add_axis("x", properties = ggvisCleanTheme)
+
+ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
+                             axis = list(stroke = "white"))
+statsTabLong %>% 
+  group_by(Tm, vitalInfo) %>%
+  summarize(avg = mean(value)) %>% 
+  ggvis(~Tm, ~avg) %>% 
+  group_by(vitalInfo) %>%
+  layer_points(fill = ~vitalInfo) %>% 
+  group_by(vitalInfo) %>% 
+  layer_lines(stroke = ~vitalInfo) %>% 
+  add_axis("x", properties = ggvisCleanTheme)
 ```
 
 
