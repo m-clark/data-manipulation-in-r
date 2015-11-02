@@ -17,46 +17,49 @@ library(dplyr); library(magrittr)
 
 
 ## Goals
-- Introduce newer approaches to data wranging, scrubbing, manipulation etc.
+>- Introduce newer approaches to data wranging, scrubbing, manipulation etc.
 
-- Show the benefits of <span class='emph'>*piping*</span> code
+>- Show the benefits of <span class='emph'>*piping*</span> code
 
-- Put it all together with some newer visualization packages 
+>- Put it all together with some newer visualization packages 
 
 
 ## Outline 
-- Newer approaches to data wrangling
-    - Introduction to <span class='pack'>plyr</span> <span class='pack'>dplyr</span> and <span class='pack'>tidyr</span>
-    - Subsetting rows
-    - Subsetting columns
-    - Reshaping data
-    - Generating new data
-    - Grouping and summarizing
+Newer approaches to data wrangling
 
-- Nothin's gonna stop the flow
-    - Piping with the <span class='pack'>magrittr</span> package
+- Introduction to <span class='pack'>plyr</span> <span class='pack'>dplyr</span> and <span class='pack'>tidyr</span>
+- Subsetting rows
+- Subsetting columns
+- Reshaping data
+- Generating new data
+- Grouping and summarizing
 
-- Quick interactive visualizations
-    - <span class='pack'>ggvis</span>
-    - <span class='pack'>htmlwidgets</span>
+Nothin's gonna stop the flow
+
+- Piping with the <span class='pack'>magrittr</span> package
+
+Quick interactive visualizations
+
+- <span class='pack'>ggvis</span>, <span class='pack'>htmlwidgets</span>
     
     
 
 # Newer approaches to <br> data wrangling
 ## Newer approaches to data wrangling
-- A starting example
+A starting example
 
-- Let's say we want to select from our data the following variables
-    - The variables **X1:X10**, which are not all together, and there are many more *X* columns
-    - The variables **var1** and **var2**, which are the only *var* variables in the data
-    - Any variable that starts with **XYZ**
+Let's say we want to select from our data the following variables
+
+  - The variables **X1:X10**, which are not all together, and there are many more *X* columns
+  - The variables **var1** and **var2**, which are the only *var* variables in the data
+  - Any variable that starts with **XYZ**
     
-- How might we go about this?
+How might we go about this?
 
 
 ## Some base R approaches
 
-- Tedious, or typically two steps just to get the columns you want.
+Tedious, or typically two steps just to get the columns you want.
 
 ```{r baseRexample1, eval=FALSE}
 # numeric indexes; not conducive to readibility or reproducibility
@@ -75,7 +78,7 @@ newData = subset(oldData, select = cols)
 
 
 ## More
-- What if you also want observations where **Z** is **Yes**, Q is **No**, and only the last 50 of those results, ordered by **var1** (descending)?
+What if you also want observations where **Z** is **Yes**, Q is **No**, and only the last 50 of those results, ordered by **var1** (descending)?
 
 ```{r baseRexample2, eval=FALSE}
 # three operations and overwriting or creating new objects if we want clarity
@@ -84,8 +87,7 @@ newData = tail(newData, 50)
 newData = newdata[order(newdata$var1, decreasing=T),]
 ```
 
-
-- And this is for fairly straightforward operations.
+And this is for fairly straightforward operations.
 
 
 ## An alternative
@@ -101,12 +103,13 @@ newData = oldData %>%
 
 ## An alternative
 
-- Even though the initial base R approach depicted is probably more concise than many would do on their own, it still is: 
-    - noisier
-    - less legible
-    - less amenable to additional data changes
-    - requires esoteric knowledge (e.g. regular expressions)
-    - often requires new objects (even if we just want to explore)
+Even though the initial base R approach depicted is probably more concise than many would do on their own, it still is: 
+
+>- noisier
+>- less legible
+>- less amenable to additional data changes
+>- requires esoteric knowledge (e.g. regular expressions)
+>- often requires new objects (even if we just want to explore)
 
 
 
@@ -197,11 +200,15 @@ library(leaflet)
 
 
 ## Newer approaches to data wrangling
-- Over the past couple of years, a handful of packages have been put out that make data management within R noticeably easier
-- We will focus on <span class='pack'>plyr</span>, <span class='pack'>dplyr</span>, and <span class='pack'>tidyr</span>
-- But others, e.g. <span class='pack'>data.table</span>, take different approaches and may be useful as well
-- Newer visualization packages take advantage of these approaches to data manipulation
-    - Makes it easier to explore your data visually
+Over the past couple of years, a handful of packages have been put out that make data management within R noticeably easier
+
+We will focus on <span class='pack'>plyr</span>, <span class='pack'>dplyr</span>, and <span class='pack'>tidyr</span>
+
+But others, e.g. <span class='pack'>data.table</span>, take different approaches and may be useful as well
+
+Newer visualization packages take advantage of these approaches to data manipulation
+
+- Makes it easier to explore your data visually
 
 
 
@@ -233,11 +240,10 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 
 # Your turn
 ## Your turn
-- Let's get to it!
+Let's get to it!
 
 >- Use a base R dataset
     - Examples: iris, mtcars, faithful or state.x77
-    
 >- As an exercise, pipe to something like the <span class='func'>summary</span>, <span class='func'>plot</span> or <span class='func'>cor</span> (if all numeric) as follows:
 
 ```{r yourturnPipe, eval=FALSE}
@@ -245,7 +251,7 @@ data %>%
   function
 ```
 
->- If the function you use has additional arguments you want to try, put those arguments in parentheses
+>- If the function you use has additional arguments you want to try, put those arguments in parentheses:
 
 ```{r pipewithargs, eval=FALSE}
 data %>% 
@@ -262,9 +268,9 @@ As is often the case, there are times when we want to calculate new variables ba
 
 We can use mutate or transmute for this.
 
-- <span class='func'>mutate</span> appends to current data
-- <span class='func'>mutate_each</span> will apply a function over multiple columns
-- <span class='func'>transmute</span> will return only the newly created data
+>- <span class='func'>mutate</span> appends to current data
+>- <span class='func'>mutate_each</span> will apply a function over multiple columns
+>- <span class='func'>transmute</span> will return only the newly created data
 
 First, let's scrape some data:
 
@@ -279,8 +285,9 @@ bball = read_html(url) %>%
 ```
 
 ## Generating New Data
-- The data is currently all character strings.
-- We'll use <span class='func'>mutate_each</span> to make every column numeric except for Player, Pos, and Tm.
+The data is currently all character strings.
+
+We'll use <span class='func'>mutate_each</span> to make every column numeric except for Player, Pos, and Tm.
 
 ```{r mutateach, cache=TRUE}
 bball %<>% 
@@ -292,7 +299,7 @@ glimpse(bball)
 
 ## Generating New Data
 
-- A common situation, creating composites of existing variables.
+A common situation, creating composites of existing variables.
 
 ```{r mutate, cache=TRUE}
 bball = bball %>% 
@@ -306,10 +313,12 @@ summary(select(bball, shootingDif))  # select and others don't have to be piped 
 
 ## Generating New Data
 
-- Sometimes we want to combine (or split) variables...
-- <span class='func'>unite</span> creates a new variable as the string combination of others.
-    - essentially <span class='func'>paste</span>
-- <span class='func'>separate</span> does the opposite.
+Sometimes we want to combine (or split) variables...
+<span class='func'>unite</span> creates a new variable as the string combination of others.
+
+- essentially <span class='func'>paste</span>
+
+<span class='func'>separate</span> does the opposite.
 
 ```{r tidyrUnite, cache=TRUE}
 library(tidyr)
@@ -321,7 +330,7 @@ bball %>%
 
 
 ## Generating New Data
-- Separate player into first and last names based on where the space occurs.
+Separate player into first and last names based on where the space occurs.
 
 ```{r tidyrSpread, cache=TRUE}
 library(tidyr)
@@ -333,7 +342,8 @@ bball %>%
 
 # Your turn
 ## Your turn
-- Data: state.x77
+
+Data: state.x77
 
 0. Convert to <span class='func'>data.frame</span>
 1. Create a variable that's the <span class='func'>log</span> of population
@@ -344,11 +354,11 @@ bball %>%
 # Selecting Variables
 ## Selecting Variables
 
-- There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
 
-- Although this is easily handled in base R (as shown earlier), it can often more clearly accomplished using select in <span class='pack'>dplyr</span>
+Although this is easily handled in base R (as shown earlier), it can often more clearly accomplished using select in <span class='pack'>dplyr</span>
 
-- The following lets us look at the data clearly, without having to create objects, use quotes etc.
+The following lets us look at the data clearly, without having to create objects, use quotes etc.
 
 ```{r select1, cache=TRUE}
 bball %>% 
@@ -358,7 +368,7 @@ bball %>%
 
 
 ## Selecting Variables
-- That works great, but now we need to drop some of those variables to look at correlations.
+That works great, but now we need to drop some of those variables to look at correlations.
 
 ```{r select2, cache=TRUE}
 scoringDat = bball %>% 
@@ -372,7 +382,7 @@ scoringDat %>%
 
 
 ## Selecting Variables
-- Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
+Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
 
 ```{r select3, cache=TRUE}
 bball %>% 
@@ -386,7 +396,7 @@ bball %>%
 # Filtering Observations
 ## Filtering Observations
 
-- Recall this bit of code?
+Recall this bit of code?
 
 ```{r bballRecall, eval=FALSE}
 bball = html(url) %>% 
@@ -396,9 +406,9 @@ bball = html(url) %>%
   filter(Rk != "Rk")
 ```
 
-- You will notice the filter line at the end.
+You will notice the filter line at the end.
 
-- We sometimes want to see a very specific portion of the data.
+We sometimes want to see a very specific portion of the data.
 
 
 ## Filtering Observations
@@ -421,7 +431,7 @@ bball %>%
 
 
 ## Filtering Observations
-- This can be done with things that are created on the fly...
+This can be done with things that are created on the fly...
 
 ```{r uniteFilterArrange, cache=TRUE}
 bball %>% 
@@ -433,10 +443,7 @@ bball %>%
 
 # Your turn
 ## Your turn
-- Select and filter exercise
-- bonus filter if product > some amount(without mutate)
-
-- A brief exercise:
+A brief exercise:
 
 1. filter the iris data set to only the `r "virginica"` species
 2. show only **Petal.Length** and **Petal.Width** var
@@ -447,20 +454,22 @@ bball %>%
 # Reshaping Data
 ## Reshaping Data
 
-- Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
+Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
 
-- Reshaping can take many forms. You might need to reshape your data from wide format to long format.
+Reshaping can take many forms. You might need to reshape your data from wide format to long format.
 
-- Or, maybe you need to split or combine variables.
+Or, maybe you need to split or combine variables.
 
-- Either way, R has you covered.
+Either way, R has you covered.
 
 ## Wide to Long
 
-- We are going to use the <span class='pack'>tidyr</span> package to make this data go from wide to long.
-- The function of note is gather
-    - key is the new variable name
-    - value is the name of the 
+We are going to use the <span class='pack'>tidyr</span> package to make this data go from wide to long.
+
+The function of note is <span class='func'>gather</span>
+
+- **key** is the new variable name
+- **value** is the name of the 
 
 ```{r wide2long, eval=TRUE, cache=TRUE, echo=-c(1:2)}
 library(tidyr)
@@ -477,7 +486,7 @@ bballLong %>% head
 
 ## Long to wide
 
-- Going the reverse direction
+Going the reverse direction
 
 ```{r long2wide, cache=TRUE, eval=TRUE}
 bballLong %>%
@@ -489,9 +498,9 @@ bballLong %>%
 # Grouping and Summarizing Data
 ## Grouping and Summarizing Data
 
-- When working with data, a very common task is to look at descriptive statistics for various groups.
+When working with data, a very common task is to look at descriptive statistics for various groups.
 
-- Using the various functions within dplyr and magrittr makes this very easy.
+Using the various functions within <span class='pack'>dplyr</span> and <span class='pack'>magrittr</span> makes this very easy.
 
 ```{r groupby, eval=FALSE}
 
