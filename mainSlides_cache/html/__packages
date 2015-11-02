@@ -6,3 +6,6 @@ rvest
 stringr
 leaflet
 tidyr
+dygraphs
+networkD3
+DT

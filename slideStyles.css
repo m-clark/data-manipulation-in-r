@@ -39,7 +39,11 @@ table.acknowledge td {
   font-weight:600;
 }
 
-
+.pipe{
+  font-family:Courier;
+  font-weight:600;
+  color:#ff5500;
+}
 
 /* The following chunk removes the slide numbers */
 

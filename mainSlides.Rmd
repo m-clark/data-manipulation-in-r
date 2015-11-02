@@ -549,10 +549,11 @@ state.x77 %>%
 # More with pipes
 ## More with pipes
 
-- Recap thus far
-- %>% : Passes the prior to the function after the pipe
-    - x %>% f same as f(x)
-- Example
+Recap thus far:
+
+- <span class='pipe'>%>%</span> : Passes the prior to the function after the pipe
+    - x <span class='pipe'>%>%</span> f same as f(x)
+- Example:
 
 ```{r `%>%`}
 iris %>% head
@@ -561,20 +562,20 @@ head(iris)
 
 
 ## More with pipes
+<span class='pipe'>%\$%</span>  : Exposes the names in the prior to the function after
 
-
-- \%\$\%  : Exposes the names in the prior to the function after
-    - x %\$% y(a, b)  same as y(x\$a, x\$b)
-- Example
+- x <span class='pipe'>%\$%</span> y(a, b)  same as y(x\$a, x\$b)
+- Example:
 
 ```{r `%$%`}
 iris %$% lm(Sepal.Length ~ Sepal.Width)
 ```
 
 ## More with pipes
-- %T>% : Passes the prior to the function after the pipe and what follows
-    - x %T>% y %>% z == x %>% y 
-- Example
+<span class='pipe'>%T>%</span> : Passes the prior to the function after the pipe and what follows
+
+- x <span class='pipe'>%T>%</span> y <span class='pipe'>%>%</span> z is the same as x <span class='pipe'>%>%</span> y & x <span class='pipe'>%>%</span> z
+- Example:
 
 ```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
 library(dplyr)
@@ -585,28 +586,27 @@ iris %>%
 ```
 
 ## More with pipes
-- Unfortunately the T pipe does not allow for printable results.
+Unfortunately the T pipe does not allow for printable results.
 
-- Works
+- Works:
 ```{r Tprobs1, eval=FALSE, }
 iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>% summary
 ```
 
-- Provides no summary.
+- Provides no summary:
 ```{r Tprobs2, eval=FALSE}
 iris %>% select(Sepal.Length, Sepal.Width) %T>% summary %>% plot
 ```
 
-- Very limiting in my opinion
+- Somewhat limiting in my opinion.
 
 ## More with pipes
-- %<>% : assigns to former object the operations that follow
+<span class='pipe'>%<>%</span> : assigns to former object the operations that follow
 
-- Example
+- Example:
 
 ```{r `%<>%`}
 iris2 = iris
-iris2 %>% summary
 iris2 %<>% rnorm(10)
 iris2
 ```
@@ -616,22 +616,24 @@ iris2
 # Piping to other functions
 ## Piping to other functions
 
-- One of the advantages to piping is that it's not limited to dplyr style data management
+One of the advantages to piping is that it's not limited to dplyr style data management functions.
 
-- *Any* R function can be potentially piped to, and we've seen several examples so far.
+<span class='emph'>*Any*</span> R function can be potentially piped to, and we've seen several examples so far.
 
 ```{r}
 data.frame(y=rnorm(100), x=rnorm(100)) %$%
   lm(y ~ x)
 ```
 
-- This facilitates data exploration 
+This facilitates data exploration 
 
 ## Piping to other functions
-- Many newer visualization packages take advantage of piping as well.
-- htmlwidgets is a package that makes it easy to use R to create javascript visualizations
-    - i.e. what you see everywhere on the web.
-- The packages using it typically are pipe-oriented
+Many newer visualization packages take advantage of piping as well.
+
+htmlwidgets is a package that makes it easy to use R to create javascript visualizations
+- i.e. what you see everywhere on the web.
+
+The packages using it typically are pipe-oriented
 
 
 ## Some htmlwidgets packages
@@ -641,8 +643,6 @@ data.frame(y=rnorm(100), x=rnorm(100)) %$%
     - Interactive time series visualization
 - networkD3 
     - Network visualization with D3
-- sparkline 
-    - Small inline charts
 - DT 
     - Tabular data via DataTables
 - rthreejs 
@@ -660,7 +660,7 @@ leaflet() %>%
 
 ## dygraphs
 
-- Dygraphs requires time-series objects
+Dygraphs requires time-series objects
 
 ```{r dygraphdata, fig.height=3}
 #use current poll data code from home
@@ -671,18 +671,28 @@ cbind(ldeaths, mdeaths, fdeaths) %>%
 ```
 
 
+## networkD3
 
-## sparkline
-```{r sparkline, include=F, cache=FALSE}
-library(sparkline)
-x = rnorm(100)
+```{r networkD3initial, echo=FALSE, cache=TRUE}
+set.seed(1352)
+netlinks = data.frame(source = c(0,0,0,1,1,2,2,3,3,3,4,5,5),
+                   target = sample(0:5, 13, replace = T),
+                   value = sample(1:10, 13, replace = T))
+
+
+netnodes = data.frame(name = c('Bobby', 'Janie','Timmie', 'Mary', 'Johnny', 'Billy'),
+                      group = c('friend', 'frenemy','frenemy', rep('friend', 3)),
+                      size = sample(1:20, 6))
 ```
 
-- Sparklines can be use to convey visual information in a small space
-- Inline line graphs `r sparkline(x)`
-- Bar charts  
-`r sparkline(abs(x), type = 'bar')`  
-`r sparkline(x, type = 'bar')`
+```{r networkD3}
+library(networkD3)
+forceNetwork(Links = netlinks, Nodes = netnodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             Nodesize = "size", Group = "group", opacity = 0.4, legend = T,
+             colourScale = JS("d3.scale.category10()"))
+```
+
 
 ## data table
 
@@ -692,36 +702,97 @@ datatable(select(bball, 1:5), rownames=F)
 ```
 
 ## ggvis
-- ggvis is a general purpose visualization package
+ggvis is a general purpose visualization package
+
   - the successor to ggplot2 to provide interactivity
   - ggplot2 is still great for static plots
 
-```{r ggvis}
-library(ggvis)
+
+
+```{r ggvisSetup, cache=TRUE}
 bballLong %>% head
+```
 
 
-ggvisCleanTheme = axis_props(grid = list(stroke = "white"), 
-                             axis = list(stroke = "white"))
+## ggvis
+ggvis works by starting with a base, to which subsequent layers are added, with additional options if needed.
+
+```{r ggvisDemo, eval=FALSE}
+library(ggvis)
 bballLong %>% 
   group_by(Tm, vitalInfo) %>%
   summarize(avg = mean(value)) %>% 
-  ggvis(~Tm, ~avg) %>% 
-  group_by(vitalInfo) %>%
+  ggvis(x=~Tm, y=~avg) %>% 
   layer_points(fill = ~vitalInfo) %>% 
-  group_by(vitalInfo) %>% 
-  layer_lines(stroke = ~vitalInfo) %>% 
-  add_axis("x", properties = ggvisCleanTheme)
+  add_axis("x", grid=F, properties = axis_props(labels=list(angle=90, fill='gray'),
+                                                axis=list(stroke=NA),
+                                                ticks=list(stroke=NA))
+           ) %>% 
+  add_axis('y', grid=F)
+```
+
+## ggvis
+```{r ggvisDemo2, eval=TRUE, echo=FALSE}
+library(ggvis)
+bballLong %>% 
+  group_by(Tm, vitalInfo) %>%
+  summarize(avg = mean(value)) %>% 
+  ggvis(x=~Tm, y=~avg) %>% 
+  layer_points(fill = ~vitalInfo) %>% 
+  add_axis("x", grid=F, properties = axis_props(labels=list(angle=90, fill='gray'),
+                                                axis=list(stroke=NA),
+                                                ticks=list(stroke=NA))
+           ) %>% 
+  add_axis('y', grid=F)
 ```
 
 
 # Your turn
 ## Your turn
+Using ggvis and the data set mtcars, well create a grouped scatterplot without creating any new objects.
+
+1. Make a new variable that called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
+    - factor(am, labels=c('auto', 'manual'))
+2. Create your base ggvis
+2. Group by the transmission factor variable
+    - group_by(amFactor)
+3. Make a scatterplot (layer_points) of horsepower (hp) and miles per gallon (mpg)
+    - fill =~ amFactor
+4. add layer_smooths
+    - stroke =~ amFactor
+
+## Your turn
+```{r ggvisYourTurn, fig.align='center'}
+mtcars %>% 
+  mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
+  group_by(amFactor) %>%
+  ggvis(x=~wt, y=~mpg) %>%
+  layer_points(fill=~amFactor) %>%
+  layer_smooths(stroke=~amFactor)
+```
+
+## For fun
+Add a little waggle to your plot.
+```{r ggvisFun, eval=FALSE}
+span <- waggle(0.5, 2)
+mtcars %>% 
+  mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
+  group_by(amFactor) %>%
+  ggvis(x=~wt, y=~mpg) %>%
+  layer_points(fill=~amFactor) %>%
+  layer_smooths(stroke=~amFactor, span=span)
+```
+
 
 
 ## Wrap up
-Think of these functions as organizational tools.
+Think of these packages as organizational tools.
 
+Use them to bring clarity to code.
+
+With more use, the easier it gets, and the more you can do.
+
+## Thanks!
 <table class='acknowledge'>
 <tr>
 <td style='font-size:12pt'>Michael Clark <br> Advanced Research Computing <br> Consulting for Statistics, Computing & Analytics Research <br> University of Michigan</td>
