@@ -1,6 +1,6 @@
 base
-magrittr
 dplyr
+magrittr
 xml2
 rvest
 stringr

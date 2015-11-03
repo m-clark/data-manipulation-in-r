@@ -461,12 +461,11 @@ We are going to use the <span class='pack'>tidyr</span> package to make this dat
 
 The function of note is <span class='func'>gather</span>
 
-- **key** is the new variable name
-- **value** is the name of the 
+- **key** is the new variable name, a factor whose labels are the variable names of the wide format
+- **value** is the name of the variable that will contain their values
 
-```{r wide2long, eval=TRUE, cache=TRUE, echo=-c(1:2)}
+```{r wide2long, eval=TRUE, cache=TRUE, echo=-c(1)}
 library(tidyr)
-
 bballLong = bball %>% 
   select(Player, Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
   rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
@@ -568,20 +567,20 @@ iris %$% lm(Sepal.Length ~ Sepal.Width)
 <span class='pipe'>%T>%</span> : Passes the prior to the function after the pipe and what follows
 
 - x <span class='pipe'>%T>%</span> y <span class='pipe'>%>%</span> z is the same as x <span class='pipe'>%>%</span> y & x <span class='pipe'>%>%</span> z
-- Example:
+
+## More with pipes
+Example:
 
 ```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
-iris %>% 
-  select(Sepal.Length, Sepal.Width) %T>% 
-  plot %>%
-  summary
+# par(mai=c(.1,.1,.1,.1), pch=19, byt='n')
+iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>%summary
 ```
 
 ## More with pipes
 Unfortunately the T pipe does not allow for printable results.
 
 - Works:
-```{r Tprobs1, eval=FALSE, }
+```{r Tprobs1, eval=FALSE}
 iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>% summary
 ```
 
