@@ -117,12 +117,6 @@ Even though the initial base R approach depicted is probably more concise than m
 ## Start with a string, end with a map
 
 ```{r wikileafletNoEval, eval=FALSE, echo=-c(1:6)}
-packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
-sapply(packs, library, character.only=T)
-
-# a color palette to be used later
-pal = colorNumeric(palette = c('Red', 'White', 'Navy'), test0$popDiff)  
-
 wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population'
 
 # Let's go!
@@ -333,7 +327,6 @@ bball %>%
 Separate player into first and last names based on where the space occurs.
 
 ```{r tidyrSpread, cache=TRUE}
-library(tidyr)
 bball %>% 
   separate(Player, into=c('firstName', 'lastName'), sep=' ') %>% 
   select(1:5) %>% 
@@ -578,7 +571,6 @@ iris %$% lm(Sepal.Length ~ Sepal.Width)
 - Example:
 
 ```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
-library(dplyr)
 iris %>% 
   select(Sepal.Length, Sepal.Width) %T>% 
   plot %>%
@@ -718,7 +710,6 @@ bballLong %>% head
 ggvis works by starting with a base, to which subsequent layers are added, with additional options if needed.
 
 ```{r ggvisDemo, eval=FALSE}
-library(ggvis)
 bballLong %>% 
   group_by(Tm, vitalInfo) %>%
   summarize(avg = mean(value)) %>% 
@@ -774,7 +765,7 @@ mtcars %>%
 ## For fun
 Add a little waggle to your plot.
 ```{r ggvisFun, eval=FALSE}
-span <- waggle(0.5, 2)
+span = waggle(0.5, 2)
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
   group_by(amFactor) %>%
