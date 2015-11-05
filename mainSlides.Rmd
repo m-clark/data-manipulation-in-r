@@ -621,23 +621,23 @@ This facilitates data exploration
 ## Piping to other functions
 Many newer visualization packages take advantage of piping as well.
 
-htmlwidgets is a package that makes it easy to use R to create javascript visualizations
+<span class='pack'>htmlwidgets</span> is a package that makes it easy to use R to create javascript visualizations.
 - i.e. what you see everywhere on the web.
 
-The packages using it typically are pipe-oriented
+The packages using it typically are pipe-oriented and interactive.
 
 
 ## Some htmlwidgets packages
-- leaflet 
-    - Interactive maps with OpenStreetMap
-- dygraphs 
-    - Interactive time series visualization
-- networkD3 
+- <span class='pack'>leaflet</span>
+    - maps with OpenStreetMap
+- <span class='pack'>dygraphs</span>
+    - time series visualization
+- <span class='pack'>networkD3</span>
     - Network visualization with D3
-- DT 
+- <span class='pack'>DT</span>
     - Tabular data via DataTables
-- rthreejs 
-    - Interactive 3D graphics
+- <span class='pack'>rthreejs</span>
+    - 3D graphics
 
 ## leaflet
 
@@ -739,7 +739,7 @@ bballLong %>%
 
 # Your turn
 ## Your turn
-Using ggvis and the data set mtcars, well create a grouped scatterplot without creating any new objects.
+Using ggvis and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
 
 1. Make a new variable that called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
     - factor(am, labels=c('auto', 'manual'))
@@ -752,7 +752,7 @@ Using ggvis and the data set mtcars, well create a grouped scatterplot without c
     - stroke =~ amFactor
 
 ## Your turn
-```{r ggvisYourTurn, fig.align='center'}
+```{r ggvisYourTurn, fig.align='center', fig.height=3.5, fig.width=6}
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
   group_by(amFactor) %>%
@@ -776,19 +776,23 @@ mtcars %>%
 
 
 ## Wrap up
-Think of these packages as organizational tools.
+Think of these packages as organizational and exploratory tools.
 
 Use them to bring clarity to code.
+
+Use them to explore your data more easily whether for visualization or modeling.
 
 With more use, the easier it gets, and the more you can do.
 
 ## Thanks!
 <table class='acknowledge'>
 <tr>
-<td style='font-size:12pt'>Michael Clark <br> Advanced Research Computing <br> Consulting for Statistics, Computing & Analytics Research <br> University of Michigan</td>
+<td>Michael Clark <br> Advanced Research Computing <br> Consulting for Statistics, Computing & Analytics Research <br> University of Michigan
+<br><br>
+Seth Berry<br> Notre Dame Research<br> Center for Social Research<br> University of Notre Dame
+</td>
+<td><img src="Rlogo84_2.png" style='size:50%'></img></td>
 
-<td style='text-align:right; font-size:12pt'>Seth Berry<br> Notre Dame Research<br> Center for Social Research<br> University of Notre Dame</td>
-</tr>
 </table>
 
 
