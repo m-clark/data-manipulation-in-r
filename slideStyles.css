@@ -12,12 +12,11 @@ table.acknowledge {
 	border-spacing: 40px;
 	color: black;
 	color: rgba(255,85,0,.75);
-	font-family: Magneto;
 }
 
 table.acknowledge td {
-  font-size:10pt;
-  padding: 20px;
+	font-size:100%;
+  padding: 10px;
 }
 
 /* The following is for emphasis */
