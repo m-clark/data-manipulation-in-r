@@ -605,13 +605,16 @@ state.x77 %>%
             meanIll=mean(Illiteracy))
 ```
 
+
+
 # Nothin's gonna stop the flow
 ## More with pipes
 
 Recap thus far:
 
-- <span class='pipe'>%>%</span> : Passes the prior to the function after the pipe
-    - x <span class='pipe'>%>%</span> f same as f(x)
+<span class='pipe'>%>%</span> : Passes the prior object to the function after the pipe
+
+- x <span class='pipe'>%>%</span> f same as f(x)
 - Example:
 
 ```{r `%>%`}
@@ -630,8 +633,9 @@ head(iris)
 iris %$% lm(Sepal.Length ~ Sepal.Width)
 ```
 
+
 ## More with pipes
-<span class='pipe'>%T>%</span> : Passes the prior to the function after the pipe and what follows
+<span class='pipe'>%T>%</span> : Passes the prior object to the function after the pipe and what follows
 
 - x <span class='pipe'>%T>%</span> y <span class='pipe'>%>%</span> z is the same as x <span class='pipe'>%>%</span> y & x <span class='pipe'>%>%</span> z
 
@@ -844,6 +848,12 @@ mtcars %>%
 
 
 ## Wrap up
+Note that much of the functionality you see is in base R
+
+- <span class='func'>with</span>, <span class='func'>within</span>, <span class='func'>tapply</span> etc.
+
+What you now have is a more straightforward way to do those operations.
+
 Think of these packages as organizational and exploratory tools.
 
 Use them to bring clarity to code.
