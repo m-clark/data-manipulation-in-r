@@ -25,6 +25,9 @@ library(dplyr); library(magrittr)
 - Copy, paste, and run or run the following:
 - <span style="font-family:monospace; font-size:18pt">source("http://www-personal.umich.edu/~micl/installLoadPackages.R")</span>
 
+YOU WILL GET A POP-UNDER WINDOW (on the Windows lab machines).  Affirm that you want to use a personal library.
+
+
 ## The Reference
 
 **The Treachery of Images** by <span class='emph'>Rene Magritte</span>
