@@ -25,6 +25,14 @@ library(dplyr); library(magrittr)
 - Copy, paste, and run or run the following:
 - <span style="font-family:monospace; font-size:18pt">source("http://www-personal.umich.edu/~micl/installLoadPackages.R")</span>
 
+## The Reference
+
+**The Treachery of Images** by <span class='emph'>Rene Magritte</span>
+
+<div style='text-align:center'>
+<img src='MagrittePipe.jpg'></img>
+</div>
+
 ## Goals
 >- Introduce newer approaches to data wranging, scrubbing, manipulation etc.
 
@@ -45,7 +53,7 @@ Newer approaches to data wrangling
 
 Nothin's gonna stop the flow
 
-- Piping with the <span class='pack'>magrittr</span> package
+- More piping with the <span class='pack'>magrittr</span> package
 
 Quick interactive visualizations
 
@@ -227,8 +235,9 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 } 
 ```
 
-# 
+##
 
+<div style='font-size:150%'>
 ```{r provocation2, eval=T, echo=T}
 c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 {
@@ -238,7 +247,7 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
   ..(.)
 } 
 ```
-
+</div>
 
 
 # Your turn
@@ -261,6 +270,14 @@ data %>%
   function(arg='blah')
 ```
 Note that Ctrl+Shft+m is the shortcut to make the %>% pipe.
+
+## Example
+```{r yourturnPipeExample, eval=TRUE, cache=TRUE}
+iris %>% summary
+```
+
+
+
 
 # Data Wrangling
 
@@ -348,9 +365,18 @@ bball %>%
 Data: state.x77
 
 0. Convert to <span class='func'>data.frame</span>
-1. Create a variable that's the <span class='func'>log</span> of population
-2. Create **curLifeExp** as Life Expectancy + 5
-3. summarize the data
+1. Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span>)
+2. Create **curLifeExp** as Life Expectancy (**Life.Exp**) + 5 (<span class='func'>mutate</span>)
+3. summarize the data (<span class='func'>summary</span>)
+
+## Example
+```{r yourTurnMutateExample, cache=TRUE}
+state.x77 %>% 
+  data.frame %>% 
+  mutate(popLog = log(Population),
+         curLifeExp = Life.Exp+5) %>% 
+  summary
+```
 
 
 # Selecting Variables
@@ -447,9 +473,17 @@ bball %>%
 ## Your turn
 A brief exercise:
 
-1. filter the iris data set to only the `r "virginica"` species
-2. show only **Petal.Length** and **Petal.Width** var
-3. bonus: redo, but instead filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
+1. <span class='func'>filter</span the iris data set to only the `r "virginica"` species (<span class='func'>==</span>)
+2. show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span>)
+3. bonus: redo, but instead, filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
+
+## Example
+
+```{r yourTurnFilterExample, cache=TRUE}
+iris %>% 
+  filter(Petal.Length/Petal.Width > 5) %>% 
+  summary
+```
 
 
 
@@ -523,16 +557,16 @@ scoringDat %>%
 
 Using one pipe sequence 
 
-1. convert state.x77 (a base R object) to a data frame
-2. create a new variable called 'Region' that is equal to state.region
-3. create a new variable called 'State' that is equal to state.name
-4. select only if Population is greater than 1000 (thousands)
-5. select Region and variables beginning with I
-6. group by region
-7. summarise Income, Illiteracy or Both, using the mean function
+1. convert state.x77 (a base R object) to a data frame (<span class='func'>data.frame</span>)
+2. create a new variable called **Region** that is equal to state.region (<span class='func'>mutate</span>)
+3. create a new variable called **State** that is equal to state.name
+4. <span class='func'>filter</span> only if Population is greater than 1000 (thousands)
+5. <span class='func'>select</span> **Region** and variables beginning with I
+6. group by **Region**  (<span class='func'>mutate</span>)
+7. (<span class='func'>summarize</span>) **Income**, **Illiteracy** or **Both**, using the mean function
 
-## Your Turn
-```{r yourturnDataManip, eval=FALSE}
+## Example
+```{r yourturnDataManipExample, eval=TRUE, cache=TRUE}
 state.x77 %>% 
   data.frame %>% 
   mutate(Region = state.region,
@@ -540,11 +574,11 @@ state.x77 %>%
   filter(Population > 1000) %>% 
   select(Region, starts_with('I')) %>% 
   group_by(Region) %>% 
-  summarise(meanInc=mean(Income),
+  summarize(meanInc=mean(Income),
             meanIll=mean(Illiteracy))
 ```
 
-# More with pipes
+# Nothin's gonna stop the flow
 ## More with pipes
 
 Recap thus far:
@@ -610,8 +644,8 @@ iris2
 
 
 
-# Piping to other functions
-## Piping to other functions
+# Piping for Visualization
+## Piping for Visualization
 
 One of the advantages to piping is that it's not limited to dplyr style data management functions.
 
@@ -624,7 +658,7 @@ data.frame(y=rnorm(100), x=rnorm(100)) %$%
 
 This facilitates data exploration 
 
-## Piping to other functions
+## htmlwidgets
 Many newer visualization packages take advantage of piping as well.
 
 <span class='pack'>htmlwidgets</span> is a package that makes it easy to use R to create javascript visualizations.
@@ -704,8 +738,7 @@ ggvis is a general purpose visualization package
   - the successor to ggplot2 to provide interactivity
   - ggplot2 is still great for static plots
 
-
-
+Reminder of what's in the data:
 ```{r ggvisSetup, cache=TRUE}
 bballLong %>% head
 ```
@@ -747,17 +780,19 @@ bballLong %>%
 ## Your turn
 Using ggvis and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
 
+<div style='font-size:18pt'>
 1. Make a new variable that called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
     - factor(am, labels=c('auto', 'manual'))
-2. Create your base ggvis
+2. Create your base ggvis (<span class='func'>ggvis</span>)
 2. Group by the transmission factor variable
     - group_by(amFactor)
-3. Make a scatterplot (layer_points) of horsepower (hp) and miles per gallon (mpg)
-    - fill =~ amFactor
-4. add layer_smooths
+3. Make a scatterplot (<span class='func'>layer_points</span>) of horsepower (hp) and miles per gallon (mpg) 
+    - fill =~ amFactor 
+4. add (<span class='func'>layer_smooths</span>)
     - stroke =~ amFactor
+</div>
 
-## Your turn
+## Example
 ```{r ggvisYourTurn, fig.align='center', fig.height=3.5, fig.width=6}
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
