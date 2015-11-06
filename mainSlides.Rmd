@@ -2,7 +2,7 @@
 title: "Ceci n'est pas une %>%: <br>Exploring Your Data with R"
 author: ""
 
-date: "Fall 2015 Workshop <br> <span style='color:#00274c'>Michael Clark<br>Consulting for Statistics, Computation and Analytyics Research<br>Advanced Research Computing</span>"
+date: "Fall 2015 Workshop <br> <span style='color:#00274c'>Michael Clark<br>Consulting for Statistics, Computing & Analytyics Research<br>Advanced Research Computing</span>"
 output: 
   ioslides_presentation: 
     smaller: no
