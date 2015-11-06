@@ -2,7 +2,7 @@
 title: "Ceci n'est pas une %>%: <br>Exploring Your Data with R"
 author: ""
 
-date: "Fall 2015 Workshop <br> <span style='color:#00274c'>Advanced Research Computing <br> Consulting for Statistics, Computation and Analytyics Research</span>"
+date: "Fall 2015 Workshop <br> <span style='color:#00274c'>Michael Clark <br>Advanced Research Computing <br>Consulting for Statistics, Computation and Analytyics Research</span>"
 output: 
   ioslides_presentation: 
     smaller: no
@@ -70,6 +70,7 @@ A starting example
 
 Let's say we want to select from our data the following variables
 
+  - Start with the **ID** variable
   - The variables **X1:X10**, which are not all together, and there are many more *X* columns
   - The variables **var1** and **var2**, which are the only *var* variables in the data
   - Any variable that starts with **XYZ**
@@ -86,10 +87,10 @@ Tedious, or typically two steps just to get the columns you want.
 newData = oldData[,c(1,2,3,4, etc.)]
 
 # explicitly by name; fine if only a handful; not pretty
-newData = oldData[,c('X1', 'X2', etc.)]
+newData = oldData[,c('ID','X1', 'X2', etc.)]
 
 # two step with grep; regex difficult to read/understand
-cols = c(paste0('X', 1:10), 'var1', 'var2', grep(colnames(oldData), '^XYZ', value=T))
+cols = c('ID', paste0('X', 1:10), 'var1', 'var2', grep(colnames(oldData), '^XYZ', value=T))
 newData = oldData[,cols]
 
 # or via subset
@@ -132,11 +133,10 @@ Even though the initial base R approach depicted is probably more concise than m
 >- often requires new objects (even if we just want to explore)
 
 
-
 # Another example...
 ## Start with a string, end with a map
 
-```{r wikileafletNoEval, eval=FALSE, echo=-c(1:6)}
+```{r wikileafletNoEval, eval=FALSE}
 wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population'
 
 # Let's go!
@@ -155,6 +155,7 @@ wikiURL %>%
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),       # same for 2010
          popDiff  = round(population2014/population2010 - 1, 2)*100) %>%            # create percentage difference
 ```
+
 
 ## Cont'd.
 
@@ -253,13 +254,14 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 </div>
 
 
+
 # Your turn
 ## Your turn
 Let's get to it!
 
 >- Use a base R dataset
-    - Examples: iris, mtcars, faithful or state.x77
->- As an exercise, pipe to something like the <span class='func'>summary</span>, <span class='func'>plot</span> or <span class='func'>cor</span> (if all numeric) as follows:
+    - Examples: iris, mtcars, faithful or state.x77; <span style='font-family:monospace'>library(help='datasets')</span>
+>- Pipe to something like the <span class='func'>summary</span>, <span class='func'>plot</span> or <span class='func'>cor</span> (if all numeric) as follows:
 
 ```{r yourturnPipe, eval=FALSE}
 data %>% 
@@ -274,11 +276,11 @@ data %>%
 ```
 Note that Ctrl+Shft+m is the shortcut to make the %>% pipe.
 
+
 ## Example
 ```{r yourturnPipeExample, eval=TRUE, cache=TRUE}
 iris %>% summary
 ```
-
 
 
 
@@ -303,21 +305,43 @@ url = "http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=head
 bball = read_html(url) %>% 
   html_nodes("table#totals") %>% 
   html_table %>% 
-  data.frame %>% 
+  data.frame %>%
   filter(Rk != "Rk")
 ```
+
 
 ## Generating New Data
 The data is currently all character strings.
 
 We'll use <span class='func'>mutate_each</span> to make every column numeric except for Player, Pos, and Tm.
 
-```{r mutateach, cache=TRUE}
+```{r mutateEach, cache=TRUE}
 bball %<>% 
   mutate_each(funs(as.numeric), -Player, -Pos, -Tm)   
 
 glimpse(bball)
 ```
+
+
+## Mutate
+<div class="columns-2">
+<span class='func'>mutate</span> takes a vector and returns a vector of the same dimension
+
+- 'window' function
+
+<br>
+We will contrast it with <span class='func'>summarize</span> later
+
+- or <span class='func'>summarise</span> if you prefer
+<br>
+<br>
+<br>
+<br>
+
+
+<img src="window.png" style='height:100px'></img>
+<img src="summary.png" style='height:100px'></img>
+</div>
 
 
 ## Generating New Data
@@ -326,8 +350,8 @@ A common situation, creating composites of existing variables.
 
 ```{r mutate, cache=TRUE}
 bball = bball %>% 
-  mutate(trueShooting = round(PTS / (2 * (FGA + (.44 * FTA))), 2),
-         effectiveFG = round((FG + (.5 * X3P)) / FGA, 2), 
+  mutate(trueShooting = PTS / (2 * (FGA + (.44 * FTA))),
+         effectiveFG = (FG + (.5 * X3P)) / FGA, 
          shootingDif = trueShooting - FG.)
 
 summary(select(bball, shootingDif))  # select and others don't have to be piped to use
@@ -336,12 +360,15 @@ summary(select(bball, shootingDif))  # select and others don't have to be piped 
 
 ## Generating New Data
 
+Note how we use the new variables
+
+
+## Generating New Data
+
 Sometimes we want to combine (or split) variables...
 <span class='func'>unite</span> creates a new variable as the string combination of others.
 
 - essentially <span class='func'>paste</span>
-
-<span class='func'>separate</span> does the opposite.
 
 ```{r tidyrUnite, cache=TRUE}
 library(tidyr)
@@ -353,6 +380,8 @@ bball %>%
 
 
 ## Generating New Data
+<span class='func'>separate</span> does the opposite.
+
 Separate player into first and last names based on where the space occurs.
 
 ```{r tidyrSpread, cache=TRUE}
@@ -368,9 +397,9 @@ bball %>%
 Data: state.x77
 
 0. Convert to <span class='func'>data.frame</span>
-1. Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span>)
-2. Create **curLifeExp** as Life Expectancy (**Life.Exp**) + 5 (<span class='func'>mutate</span>)
-3. summarize the data (<span class='func'>summary</span>)
+1. Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span> )
+2. Create **curLifeExp** as Life Expectancy (**Life.Exp**) + 5 (<span class='func'>mutate</span> )
+3. summarize the data (<span class='func'>summary</span> )
 
 ## Example
 ```{r yourTurnMutateExample, cache=TRUE}
@@ -418,7 +447,7 @@ Sometimes, we have a lot of variables to select. If they have a common naming sc
 ```{r select3, cache=TRUE}
 bball %>% 
   select(Player, contains("3P"), ends_with("RB")) %>% 
-  arrange(desc(X3P.1, TRB)) %>% 
+  arrange(desc(TRB)) %>% 
   head
 ```
 
@@ -466,19 +495,21 @@ This can be done with things that are created on the fly...
 
 ```{r uniteFilterArrange, cache=TRUE}
 bball %>% 
-  unite_("posTeam", c("Pos", "Tm")) %>% 
+  unite("posTeam", Pos, Tm) %>% 
   filter(posTeam == "PF_SAS") %>% 
   arrange(desc(PTS/PF)) %>% 
   select(1:10)
 ```
 
+
 # Your turn
 ## Your turn
 A brief exercise:
 
-1. <span class='func'>filter</span the iris data set to only the `r "virginica"` species (<span class='func'>==</span>)
-2. show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span>)
+1. <span class='func'>filter</span> the iris data set to only the `r "virginica"` species (<span class='func'>==</span> )
+2. show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span> )
 3. bonus: redo, but instead, filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
+
 
 ## Example
 
@@ -505,7 +536,7 @@ Either way, R has you covered.
 
 We are going to use the <span class='pack'>tidyr</span> package to make this data go from wide to long.
 
-The function of note is <span class='func'>gather</span>
+The function of note is <span class='func'>gather</span>.
 
 - **key** is the new variable name, a factor whose labels are the variable names of the wide format
 - **value** is the name of the variable that will contain their values
@@ -538,35 +569,28 @@ bballLong %>%
 
 When working with data, a very common task is to look at descriptive statistics for various groups.
 
-Using the various functions within <span class='pack'>dplyr</span> and <span class='pack'>magrittr</span> makes this very easy.
+We can use <span class='func'>group_by</span> to make this straightforward.
 
-```{r groupby, eval=FALSE}
+```{r groupby, eval=TRUE, cache=TRUE}
 scoringDat %>% 
   group_by(Pos) %>% 
   summarize(meanTrueShooting = mean(trueShooting, na.rm = TRUE))
-
-scoringDat %>% 
-  filter(Pos == "C") %>% 
-  arrange(desc(trueShooting)) %>% 
-  filter(PTS > median(PTS)) %>% 
-  select(trueShooting, PTS) %>% 
-  cor
 ```
 
 
 # Your Turn
-## Your Turn
+## Putting it all together
 ?state.x77
 
 Using one pipe sequence 
 
-1. convert state.x77 (a base R object) to a data frame (<span class='func'>data.frame</span>)
-2. create a new variable called **Region** that is equal to state.region (<span class='func'>mutate</span>)
+1. convert state.x77 (a base R object) to a data frame (<span class='func'>data.frame</span> )
+2. create a new variable called **Region** that is equal to state.region (<span class='func'>mutate</span> )
 3. create a new variable called **State** that is equal to state.name
 4. <span class='func'>filter</span> only if Population is greater than 1000 (thousands)
 5. <span class='func'>select</span> **Region** and variables beginning with I
-6. group by **Region**  (<span class='func'>mutate</span>)
-7. (<span class='func'>summarize</span>) **Income**, **Illiteracy** or **Both**, using the mean function
+6. group by **Region**  (<span class='func'>group_by</span> )
+7. <span class='func'>summarize</span> **Income**, **Illiteracy** or **Both**, using the mean function
 
 ## Example
 ```{r yourturnDataManipExample, eval=TRUE, cache=TRUE}
