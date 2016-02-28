@@ -1,0 +1,66 @@
+
+# Filtering Observations
+## Filtering Observations
+
+Recall this bit of code?
+
+```{r bballRecall, eval=FALSE}
+bball = html(url) %>% 
+  html_nodes("table#totals") %>% 
+  html_table %>% 
+  data.frame %>% 
+  filter(Rk != "Rk")
+```
+
+You will notice the filter line at the end.
+
+We sometimes want to see a very specific portion of the data.
+
+
+## Filtering Observations
+>- <span class='func'>filter</span> returns rows with matching conditions.
+>- <span class='func'>slice</span> allows for a numeric indexing approach.
+
+>- Say we want too look at forwards over the age of 35...
+
+```{r filter1, eval=FALSE}
+bball %>% 
+  filter(Age > 35, Pos == "SF" | Pos == "PF")
+```
+
+>- or the first 10 rows...
+
+```{r filter2, eval=FALSE}
+bball %>% 
+  slice(1:10)
+```
+
+
+## Filtering Observations
+This can be done with things that are created on the fly via mutate or other means...
+
+```{r uniteFilterArrange, cache=TRUE}
+bball %>% 
+  unite("posTeam", Pos, Tm) %>%             # create a new variable
+  filter(posTeam == "PF_SAS") %>%           # use it for filtering
+  arrange(desc(PTS/PF)) %>% 
+  select(1:10)
+```
+
+
+# Your turn
+## Your turn
+A brief exercise:
+
+1. <span class='func'>filter</span> the iris data set to only the `r "virginica"` species (var <span class='func'>==</span> value)
+2. show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span> )
+3. bonus: redo, but instead, filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
+
+
+## Example
+
+```{r yourTurnFilterExample, cache=TRUE}
+iris %>% 
+  filter(Petal.Length/Petal.Width > 5) %>% 
+  summary
+```

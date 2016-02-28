@@ -1,0 +1,105 @@
+.emph {
+  color: #ff5503;
+  font-weight: 600;
+}
+
+.pack {
+  color: #1e90ff;  /*dodgerblue*/
+  font-weight: 600;
+}
+
+.func {
+  color: #C93312;  /*darkred*/
+  font-weight: 600;
+}
+
+.objclass {
+  color: #006400;  /*darkgreen*/
+  font-weight: 500;
+}
+
+a {
+  color: #ff5503;
+}
+
+
+.reveal pre {   
+  margin-top: 0;
+  width:110%;
+  max-width: 150%;
+  border: 1px solid #ccc;
+  white-space: pre-wrap;
+  margin-bottom: 1em; 
+  margin-left:0;                       /*code box left margin*/
+}
+
+.reveal pre code {
+  display: block; 
+  max-width: 150%;
+  padding: 0.5em;
+  line-height: 1.1em;
+  background-color: white;
+  overflow: visible;
+  max-height: none;
+  word-wrap: normal;
+}
+
+.reveal code {
+  overflow: visible;
+  max-height: none;
+  left: 0;
+}
+
+.reveal code.r {
+  background-color: #F8F8F8;
+  max-width: 150%;
+  font-size: 75%;
+  font-family: "Inconsolata", "Source Code Pro", "Consolas", "Courier New", monospace;
+}
+
+.reveal .big-code code.r  {
+  background-color: #F8F8F8;
+  max-width: 250%;
+  font-size: 150%;
+}
+
+.reveal code.cpp {
+  background-color: #F8F8F8;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  word-wrap: normal;
+  color:#1e90ff;
+  -moz-hyphens: none;
+}
+
+.small-console pre code {
+  font-size: 50%;
+}
+
+.big-console pre code{
+  font-size: 150%;
+}
+
+.prompt .reveal .state-background {
+  background: black;
+  font-size: 100%;
+}
+
+.exclaim .reveal .state-background {
+  background: black;
+} 
+
+.footer {
+    color: black; background: #E8E8E8;
+    position: fixed; top: 90%;
+    text-align:center; width:100%;
+}
+
+.prettyprint .pln, .prettyprint .pun, .prettyprint .opn, .prettyprint .clo,
+.prettyprint .str, .prettyprint .lit, .prettyprint .atv, .prettyprint .tag, 
+.prettyprint .kwd, .prettyprint .lang-r {
+  font-size: 120%;
+  font-family: "Inconsolata", "Source Code Pro", "Consolas", "Courier New", monospace;
+  /*background-color:#ff5500;*/ /*changes background color of text, i.e. highlight, not the block*/
+}

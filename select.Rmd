@@ -1,0 +1,39 @@
+# Selecting Variables
+## Selecting Variables
+
+There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+
+Although this is easily handled in base R (as shown earlier), it can often more clearly accomplished using select in <span class='pack'>dplyr</span>
+
+The following lets us look at the data clearly, without having to create objects, use quotes etc.
+
+```{r select1, cache=TRUE}
+bball %>% 
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS) %>% 
+  summary
+```
+
+
+## Selecting Variables
+That works great, but now we need to drop some of those variables to look at correlations.
+
+```{r select2, cache=TRUE}
+scoringDat = bball %>%                                               # creating object as we will come back to it later
+  select(Player, Tm, Pos, MP, trueShooting, effectiveFG, PTS)
+
+scoringDat %>% 
+  select(-Player, -Tm, -Pos) %>% 
+  cor(use='complete') %>% 
+  round(2)
+```
+
+
+## Selecting Variables
+Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
+
+```{r select3, cache=TRUE}
+bball %>% 
+  select(Player, contains("3P"), ends_with("RB")) %>% 
+  arrange(desc(TRB)) %>% 
+  head
+```

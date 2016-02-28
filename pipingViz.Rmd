@@ -1,0 +1,210 @@
+
+## Piping for Visualization
+
+One of the advantages to piping is that it's not limited to dplyr style data management functions.
+
+<span class='emph'>*Any*</span> R function can be potentially piped to, and we've seen several examples so far.
+
+```{r}
+data.frame(y=rnorm(100), x=rnorm(100)) %$%
+  lm(y ~ x)
+```
+
+This facilitates data exploration 
+
+
+## htmlwidgets
+Many newer visualization packages take advantage of piping as well.
+
+<span class='pack'>htmlwidgets</span> is a package that makes it easy to use R to create javascript visualizations.
+
+- i.e. what you see everywhere on the web.
+
+The packages using it typically are pipe-oriented and produce interactive plots.
+
+
+## Some htmlwidgets packages
+- <span class='pack'>leaflet</span>
+    - maps with OpenStreetMap
+- <span class='pack'>dygraphs</span>
+    - time series visualization
+- <span class='pack'>networkD3</span>
+    - Network visualization with D3
+- <span class='pack'>DT</span>
+    - Tabular data via DataTables
+- <span class='pack'>rthreejs</span>
+    - 3D graphics
+
+
+## leaflet
+
+```{r leafletExample, echo=-1}
+library(leaflet)
+leaflet() %>% 
+  setView(lat=42.2655, lng=-83.7485, zoom=15) %>% 
+  addTiles() %>% 
+  addPopups(lat=42.2655, lng=-83.7485, 'Hi!')
+```
+
+
+## dygraphs
+
+Dygraphs requires time-series objects
+
+```{r dygraphdata, fig.height=3}
+#use current poll data code from home
+library(dygraphs)
+data(UKLungDeaths)
+cbind(ldeaths, mdeaths, fdeaths) %>% 
+  dygraph()
+```
+
+
+## networkD3
+
+```{r networkD3initial, echo=FALSE, cache=TRUE}
+set.seed(1352)
+netlinks = data.frame(source = c(0,0,0,1,1,2,2,3,3,3,4,5,5),
+                   target = sample(0:5, 13, replace = T),
+                   value = sample(1:10, 13, replace = T))
+
+
+netnodes = data.frame(name = c('Bobby', 'Janie','Timmie', 'Mary', 'Johnny', 'Billy'),
+                      group = c('friend', 'frenemy','frenemy', rep('friend', 3)),
+                      size = 100)
+```
+
+```{r networkD3}
+library(networkD3)
+forceNetwork(Links = netlinks, Nodes = netnodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             Nodesize = "size", Group = "group", opacity = 0.4, legend = T,
+             colourScale = JS("d3.scale.category10()"), fontSize=24)
+```
+
+
+## data table
+
+```{r datatable}
+library(DT)
+datatable(select(bball, 1:5), rownames=F)
+```
+
+
+## bokeh
+Bokeh is originally a Python interactive visualization library that provides a means to create web-based visualizations.
+
+It now has ports to R (as the <span class="pack">rbokeh</span> package), Julia and others
+
+Reminder of what's in the data:
+```{r ggvisSetup, cache=TRUE}
+bballLong %>% head
+```
+
+
+## rbokeh
+<span class='pack'>bokeh</span> works by starting with a base layer, to which subsequent layers are added, with additional options if needed.
+
+Layers are added through this same piping system.
+
+```{r ggvisDemo, eval=FALSE}
+library(rbokeh)
+bballLong %>% 
+  group_by(Tm, vitalInfo) %>%
+  summarize(avg = mean(value)) %>% 
+  figure(theme=bk_ggplot_theme, tools=NULL, width=700) %>% 
+  ly_points(x=Tm, y=avg, color = vitalInfo) %>% 
+  theme_legend() %>% 
+  theme_axis('x', major_label_orientation=-45) %>% 
+  theme_legend(border_line_alpha=0, label_width=5, label_height=2,
+               label_standoff=5, legend_spacing=0, legend_padding=0,
+               label_text_font_size='8pt')
+```
+
+
+
+## rbokeh
+```{r ggvisDemo2, eval=TRUE, echo=FALSE}
+library(ggvis)
+# bballLong %>% 
+#   group_by(Tm, vitalInfo) %>%
+#   summarize(avg = mean(value)) %>% 
+#   ggvis(x=~Tm, y=~avg) %>% 
+#   layer_points(fill = ~vitalInfo) %>% 
+#   add_axis("x", grid=F, properties = axis_props(labels=list(angle=90, fill='gray'),
+#                                                 axis=list(stroke=NA),
+#                                                 ticks=list(stroke=NA))
+#            ) %>% 
+#   add_axis('y', grid=F)
+library(rbokeh)
+bballLong %>% 
+  group_by(Tm, vitalInfo) %>%
+  summarize(avg = mean(value)) %>% 
+  figure(theme=bk_ggplot_theme, tools=NULL, width=700, legend_location='bottom_right') %>% 
+  ly_points(x=Tm, y=avg, color = vitalInfo) %>% 
+  theme_axis('x', major_label_orientation=-45) %>% 
+  theme_legend(border_line_alpha=0, legend_spacing=0, legend_padding=0,
+               label_text_font_size='6pt')
+```
+
+
+# Your turn
+## Your turn
+Using rbokeh and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
+
+
+Step 0- Run the following 
+```{r, eval=FALSE}
+pred1 = lm(mpg~hp, data=mtcars)
+```
+
+
+<div style='font-size:12pt'>
+Now, starting with your with the mtcars data set:
+
+1. Make a new variable that called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
+    - factor(am, labels=c('auto', 'manual'))   (<span class='func'>mutate</span> )
+2. Create your base plot (<span class='func'>figure</span> )
+3. Make a scatterplot (<span class='func'>ly_points</span> ) of weight (wt) and miles per gallon (mpg) 
+    - color = amFactor 
+4. add (<span class='func'>ly_abline</span> ) with your **prediction** object
+    - stroke =~ amFactor
+
+
+## Example
+```{r rbokeh, eval=FALSE}
+prediction = lm(mpg~wt, data=mtcars)
+mtcars %>% 
+  mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
+  figure(width=300, height=200, xgrid=F, ygrid=F) %>% 
+  ly_points(wt, mpg, color=amFactor, alpha=.5, hover=c(wt, mpg)) %>% 
+  ly_abline(prediction, type=2)
+```
+
+```{r ggvisYourTurn, fig.align='center', fig.height=3.5, fig.width=6, echo=F, eval=F}
+mtcars %>% 
+  mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
+  group_by(amFactor) %>%
+  ggvis(x=~wt, y=~mpg) %>%
+  layer_points(fill=~amFactor) %>%
+  layer_smooths(stroke=~amFactor)
+```
+
+## Example
+```{r rbokehShow, echo=F}
+library(mgcv)
+prediction = lm(mpg~wt, data=mtcars)
+prediction2 = predict(gam(mpg~s(wt), data=mtcars))
+preddat = data.frame(mtcars, prediction2) %>% arrange(wt)
+mtcars %>% 
+  mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
+  figure(width=750, height=500, xgrid=F, ygrid=F) %>% 
+  ly_points(wt, mpg, color=amFactor, alpha=.5, hover=c(wt, mpg)) %>% 
+  ly_abline(prediction, type=2) %>% 
+  ly_lines(x=wt, y=prediction2, color='indigo', data=preddat) 
+```
+
+
+
+
+

@@ -1,0 +1,68 @@
+
+# Nothin's gonna stop the flow
+## More with pipes
+
+Recap thus far:
+
+<span class='pipe'>%>%</span> : Passes the prior object to the function after the pipe
+
+- x <span class='pipe'>%>%</span> f same as f(x)
+- Example:
+
+```{r `%>%`}
+iris %>% head
+head(iris)
+```
+
+
+## More with pipes
+Other pipes are available with the <span class="pack">magrittr</span> package (and others)
+<span class='pipe'>%\$%</span>  : Exposes the names in the prior to the function after
+
+- x <span class='pipe'>%\$%</span> y(a, b)  same as y(x\$a, x\$b)
+- Example:
+
+```{r `%$%`}
+iris %$% lm(Sepal.Length ~ Sepal.Width)
+```
+
+
+## More with pipes
+<span class='pipe'>%T>%</span> : Passes the prior object to the function after the pipe and what follows
+
+- x <span class='pipe'>%T>%</span> y <span class='pipe'>%>%</span> z is the same as x <span class='pipe'>%>%</span> y & x <span class='pipe'>%>%</span> z
+
+## More with pipes
+Example:
+
+```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
+# par(mai=c(.1,.1,.1,.1), pch=19, byt='n')
+iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>%summary
+```
+
+## More with pipes
+Unfortunately the T pipe does not allow for printable results.
+
+- Works:
+```{r Tprobs1, eval=FALSE}
+iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>% summary
+```
+
+- Provides no summary:
+```{r Tprobs2, eval=FALSE}
+iris %>% select(Sepal.Length, Sepal.Width) %T>% summary %>% plot
+```
+
+- Somewhat limiting in my opinion.
+
+## More with pipes
+<span class='pipe'>%<>%</span> : assigns to former object the operations that follow
+
+- Example:
+
+```{r `%<>%`}
+x = rnorm(10)
+x %<>% .^2 %>% sort
+x
+```
+

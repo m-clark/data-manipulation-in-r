@@ -1,0 +1,123 @@
+# Generating New Data
+## Generating New Data
+
+As is often the case, there are times when we want to calculate new variables based upon existing ones, or perhaps make changes to ones we have.
+
+We can use mutate or transmute for this.
+
+>- <span class='func'>mutate</span> appends to current data
+>- <span class='func'>mutate_each</span> will apply a function over multiple columns
+>- <span class='func'>transmute</span> will return only the newly created data
+
+First, let's scrape some data:
+
+```{r basketballDataScrape, cache=TRUE, message=FALSE, echo=-1}
+library(rvest); library(dplyr); library(magrittr); library(tidyr)
+url = "http://www.basketball-reference.com/leagues/NBA_2015_totals.html?lid=header_seasons"
+bball = read_html(url) %>% 
+  html_nodes("table#totals") %>% 
+  html_table %>% 
+  data.frame %>%
+  filter(Rk != "Rk")
+```
+
+
+## Generating New Data
+The data is currently all character strings.
+
+We'll use <span class='func'>mutate_each</span> to make every column numeric except for Player, Pos, and Tm.
+
+```{r mutateEach, cache=TRUE}
+bball %<>% 
+  mutate_each(funs(as.numeric), -Player, -Pos, -Tm)   
+
+glimpse(bball)
+```
+
+
+## Mutate
+<div class="columns-2">
+<span class='func'>mutate</span> takes a vector and returns a vector of the same dimension
+
+- 'window' function
+
+<br>
+We will contrast it with <span class='func'>summarize</span> later
+
+- or <span class='func'>summarise</span> if you prefer
+<br>
+<br>
+<br>
+<br>
+
+
+<img src="img/window.png" style='height:100px'></img>
+<img src="img/summary.png" style='height:100px'></img>
+</div>
+
+
+## Generating New Data
+
+A common situation, creating composites of existing variables.
+
+```{r mutate, cache=TRUE}
+bball = bball %>% 
+  mutate(trueShooting = PTS / (2 * (FGA + (.44 * FTA))),
+         effectiveFG = (FG + (.5 * X3P)) / FGA, 
+         shootingDif = trueShooting - FG.)
+
+summary(select(bball, shootingDif))  # select and others don't have to be piped to use
+```
+
+
+## Generating New Data
+
+Note how we use the new variables
+
+
+## Generating New Data
+
+Sometimes we want to combine (or split) variables...
+<span class='func'>unite</span> creates a new variable as the string combination of others.
+
+- essentially <span class='func'>paste</span>
+
+```{r tidyrUnite, cache=TRUE}
+library(tidyr)
+bball %>% 
+  unite("posTeam", Pos, Tm) %>% 
+  select(1:5) %>% 
+  head
+```
+
+
+## Generating New Data
+<span class='func'>separate</span> does the opposite.
+
+Separate player into first and last names based on where the space occurs.
+
+```{r tidyrSpread, cache=TRUE}
+bball %>% 
+  separate(Player, into=c('firstName', 'lastName'), sep=' ') %>% 
+  select(1:5) %>% 
+  head
+```
+
+# Your turn
+## Your turn
+
+Data: state.x77
+
+0. Convert to <span class='func'>data.frame</span>
+1. Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span> )
+2. Create **curLifeExp** as Life Expectancy (**Life.Exp**) + 5 (<span class='func'>mutate</span> )
+3. summarize the data (<span class='func'>summary</span> )
+
+## Example
+```{r yourTurnMutateExample, cache=TRUE}
+state.x77 %>% 
+  data.frame %>% 
+  mutate(popLog = log(Population),
+         curLifeExp = Life.Exp+5) %>% 
+  summary
+```

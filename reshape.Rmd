@@ -1,0 +1,41 @@
+# Reshaping Data
+## Reshaping Data
+
+Depending upon your analytical or visualization needs, sometimes you need to reshape your data.
+
+Reshaping can take many forms. You might need to reshape your data from wide format to long format.
+
+Or, maybe you need to split or combine variables.
+
+Either way, R has you covered.
+
+## Wide to Long
+
+We are going to use the <span class='pack'>tidyr</span> package to make this data go from wide to long.
+
+The function of note is <span class='func'>gather</span>.
+
+- **key** is the new variable name, a factor whose labels are the variable names of the wide format
+- **value** is the name of the variable that will contain their values
+
+```{r wide2long, eval=TRUE, cache=TRUE, echo=-c(1)}
+library(tidyr)
+bballLong = bball %>% 
+  select(Player, Tm, FG., X3P, X2P.1, trueShooting, effectiveFG) %>%
+  rename(fieldGoalPerc = FG., threePointPerc = X3P, twoPointPerc = X2P.1) %>% 
+  mutate(threePointPerc = threePointPerc/100) %>% 
+  gather(key = 'vitalInfo', value = 'value', -Tm, -Player) 
+
+bballLong %>% head
+```
+
+
+## Long to wide
+
+Going the reverse direction
+
+```{r long2wide, cache=TRUE, eval=TRUE}
+bballLong %>%
+  spread(vitalInfo, value) %>% 
+  head
+```
