@@ -38,7 +38,9 @@ The packages using it typically are pipe-oriented and produce interactive plots.
 
 ## leaflet
 
-```{r leafletExample, echo=-1}
+Use  <span class='pack'>leaflet</span> for quick and easy maps.
+
+```{r leafletExample, echo=-1, eval=F}
 library(leaflet)
 leaflet() %>% 
   setView(lat=42.2655, lng=-83.7485, zoom=15) %>% 
@@ -46,13 +48,13 @@ leaflet() %>%
   addPopups(lat=42.2655, lng=-83.7485, 'Hi!')
 ```
 
+<img src="img/leafletpngbecauseleafletneverworksinslides.png" style="display:block; margin: 0 auto; width:25%">
 
 ## dygraphs
 
-Dygraphs requires time-series objects
+ <span class='pack'>Dygraphs</span> focus on time-series objects
 
 ```{r dygraphdata, fig.height=3}
-#use current poll data code from home
 library(dygraphs)
 data(UKLungDeaths)
 cbind(ldeaths, mdeaths, fdeaths) %>% 
@@ -61,6 +63,10 @@ cbind(ldeaths, mdeaths, fdeaths) %>%
 
 
 ## networkD3
+
+Use  <span class='pack'>networkD3</span> for interactive networks
+
+- See also  <span class='pack'>VisNetwork</span>
 
 ```{r networkD3initial, echo=FALSE, cache=TRUE}
 set.seed(1352)
@@ -74,6 +80,7 @@ netnodes = data.frame(name = c('Bobby', 'Janie','Timmie', 'Mary', 'Johnny', 'Bil
                       size = 100)
 ```
 
+
 ```{r networkD3}
 library(networkD3)
 forceNetwork(Links = netlinks, Nodes = netnodes, Source = "source",
@@ -83,7 +90,9 @@ forceNetwork(Links = netlinks, Nodes = netnodes, Source = "source",
 ```
 
 
-## data table
+## data tables
+
+<span class="pack">DT</span> package provides interactive data
 
 ```{r datatable}
 library(DT)
@@ -91,117 +100,100 @@ datatable(select(bball, 1:5), rownames=F)
 ```
 
 
-## bokeh
-Bokeh is originally a Python interactive visualization library that provides a means to create web-based visualizations.
+## Plotly
 
-It now has ports to R (as the <span class="pack">rbokeh</span> package), Julia and others
+<span class="pack">Plotly</span> is a cross platform interactive visualization library
+
+It also works with JS, Python, Matlab and others
 
 Reminder of what's in the data:
-```{r ggvisSetup, cache=TRUE}
+
+```{r plotlySetup, cache=TRUE}
 bballLong %>% head
 ```
 
 
-## rbokeh
-<span class='pack'>bokeh</span> works by starting with a base layer, to which subsequent layers are added, with additional options if needed.
+## Plotly
+
+<span class='pack'>Plotly</span> works by starting with a base layer... 
+
+to which subsequent layers are added...
+
+with additional options if needed.
 
 Layers are added through this same piping system.
 
-```{r ggvisDemo, eval=FALSE}
-library(rbokeh)
+```{r plotlyDemo, eval=FALSE}
+library(plotly)
 bballLong %>% 
   group_by(Tm, vitalInfo) %>%
   summarize(avg = mean(value)) %>% 
-  figure(theme=bk_ggplot_theme, tools=NULL, width=700) %>% 
-  ly_points(x=Tm, y=avg, color = vitalInfo) %>% 
-  theme_legend() %>% 
-  theme_axis('x', major_label_orientation=-45) %>% 
-  theme_legend(border_line_alpha=0, label_width=5, label_height=2,
-               label_standoff=5, legend_spacing=0, legend_padding=0,
-               label_text_font_size='8pt')
+  plot_ly(width=700) %>% 
+  add_markers(x=~Tm, y=~avg, color =~vitalInfo) %>% 
+  layout()   # options go here
 ```
 
 
 
-## rbokeh
-```{r ggvisDemo2, eval=TRUE, echo=FALSE}
-library(ggvis)
-# bballLong %>% 
-#   group_by(Tm, vitalInfo) %>%
-#   summarize(avg = mean(value)) %>% 
-#   ggvis(x=~Tm, y=~avg) %>% 
-#   layer_points(fill = ~vitalInfo) %>% 
-#   add_axis("x", grid=F, properties = axis_props(labels=list(angle=90, fill='gray'),
-#                                                 axis=list(stroke=NA),
-#                                                 ticks=list(stroke=NA))
-#            ) %>% 
-#   add_axis('y', grid=F)
-library(rbokeh)
-bballLong %>% 
-  group_by(Tm, vitalInfo) %>%
-  summarize(avg = mean(value)) %>% 
-  figure(theme=bk_ggplot_theme, tools=NULL, width=700, legend_location='bottom_right') %>% 
-  ly_points(x=Tm, y=avg, color = vitalInfo) %>% 
-  theme_axis('x', major_label_orientation=-45) %>% 
-  theme_legend(border_line_alpha=0, legend_spacing=0, legend_padding=0,
-               label_text_font_size='6pt')
-```
 
-
-# Your turn
 ## Your turn
-Using rbokeh and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
+## Your turn
+Using plotly and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
 
 
 Step 0- Run the following 
+
 ```{r, eval=FALSE}
-pred1 = lm(mpg~hp, data=mtcars)
+pred1 = predict(lm(mpg~hp, data=mtcars))
 ```
 
 
-<div style='font-size:12pt'>
+<div style='font-size:18pt'>
 Now, starting with your with the mtcars data set:
 
-1. Make a new variable that called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
+1. Make a new variable called 'amFactor' that is just a factor of the original am, with labels 'auto' and 'manual'
     - factor(am, labels=c('auto', 'manual'))   (<span class='func'>mutate</span> )
-2. Create your base plot (<span class='func'>figure</span> )
-3. Make a scatterplot (<span class='func'>ly_points</span> ) of weight (wt) and miles per gallon (mpg) 
+2. Create your base plot (<span class='func'>plot_ly</span> )
+3. Make a scatterplot (<span class='func'>add_markers</span> ) of weight (wt) and miles per gallon (mpg) 
     - color = amFactor 
-4. add (<span class='func'>ly_abline</span> ) with your **prediction** object
-    - stroke =~ amFactor
+4. add (<span class='func'>add_lines</span> ) with your **prediction** object
+</div>
 
 
 ## Example
-```{r rbokeh, eval=FALSE}
-prediction = lm(mpg~wt, data=mtcars)
+
+```{r plotlyExample, eval=FALSE}
+prediction = predict(lm(mpg~wt, data=mtcars))
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
-  figure(width=300, height=200, xgrid=F, ygrid=F) %>% 
-  ly_points(wt, mpg, color=amFactor, alpha=.5, hover=c(wt, mpg)) %>% 
-  ly_abline(prediction, type=2)
+  plot_ly(width=300, height=200) %>% 
+  add_markers(~wt, ~mpg, color=~amFactor, alpha=.5, hover=c(~wt, ~mpg)) %>% 
+  add_lines(x=~wt, y=prediction, type=2, name='prediction')
 ```
 
-```{r ggvisYourTurn, fig.align='center', fig.height=3.5, fig.width=6, echo=F, eval=F}
+```{r plotlyYourTurn, echo=F, eval=F}
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
   group_by(amFactor) %>%
-  ggvis(x=~wt, y=~mpg) %>%
-  layer_points(fill=~amFactor) %>%
-  layer_smooths(stroke=~amFactor)
+  plot_ly(x=~wt, y=~mpg) %>%
+  add_markers(color=~amFactor)
 ```
 
 ## Example
-```{r rbokehShow, echo=F}
-library(mgcv)
-prediction = lm(mpg~wt, data=mtcars)
-prediction2 = predict(gam(mpg~s(wt), data=mtcars))
-preddat = data.frame(mtcars, prediction2) %>% arrange(wt)
-mtcars %>% 
+
+```{r plotlyShow, echo=F}
+library(mgcv); library(plotly)
+prediction_lm = predict(lm(mpg~wt, data=mtcars))
+prediction_gam = predict(gam(mpg~s(wt), data=mtcars))
+preddat = data.frame(mtcars, prediction_lm, prediction_gam) %>% arrange(wt)
+preddat %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
-  figure(width=750, height=500, xgrid=F, ygrid=F) %>% 
-  ly_points(wt, mpg, color=amFactor, alpha=.5, hover=c(wt, mpg)) %>% 
-  ly_abline(prediction, type=2) %>% 
-  ly_lines(x=wt, y=prediction2, color='indigo', data=preddat) 
+  plot_ly(x=~wt, y=~mpg, color=~amFactor, hover=c(~wt, ~mpg), 
+          alpha=.5, width=750, height=500, type='scatter', showlegend=T) %>% 
+  add_lines(y=~prediction_lm, line=list(color='#1e90ff'), showlegend=F) %>% 
+  add_lines(y=~prediction_gam, line=list(color='indigo'), showlegend=F) %>% 
+  lazerhawk::theme_plotly() %>% 
+  layout(paper_bgcolor='#fdf6e3', plot_bgcolor='#fdf6e3')
 ```
 
 

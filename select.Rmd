@@ -1,11 +1,16 @@
-# Selecting Variables
+
+## Selecting Variables
 ## Selecting Variables
 
-There are times when you do not want to look at the entire dataset, but instead want to focus on a few key variables.
+Often you do not need the entire dataset
 
-Although this is easily handled in base R (as shown earlier), it can often more clearly accomplished using select in <span class='pack'>dplyr</span>
+- Want to focus on a few key variables
 
-The following lets us look at the data clearly, without having to create objects, use quotes etc.
+Easily handled in base R (as shown earlier), 
+
+It can be more clear to use <span class="func">select</span> in <span class='pack'>dplyr</span>
+
+- Don't have to create objects, use quotes or $, etc.
 
 ```{r select1, cache=TRUE}
 bball %>% 
@@ -15,7 +20,10 @@ bball %>%
 
 
 ## Selecting Variables
-That works great, but now we need to drop some of those variables to look at correlations.
+
+That works great, but what if we want to drop some variables?
+
+- Need numeric only for correlation
 
 ```{r select2, cache=TRUE}
 scoringDat = bball %>%                                               # creating object as we will come back to it later
@@ -29,7 +37,10 @@ scoringDat %>%
 
 
 ## Selecting Variables
-Sometimes, we have a lot of variables to select. If they have a common naming scheme, this becomes very easy.
+
+Sometimes, we have a lot of variables to select
+
+If they have a common naming scheme, this can be very easy
 
 ```{r select3, cache=TRUE}
 bball %>% 

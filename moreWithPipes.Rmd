@@ -1,13 +1,14 @@
 
-# Nothin's gonna stop the flow
+## Nothin's gonna stop the flow
 ## More with pipes
 
 Recap thus far:
 
-<span class='pipe'>%>%</span> : Passes the prior object to the function after the pipe
+<span class='emph'>%>%</span> : Passes the prior object to the function after the pipe
 
-- x <span class='pipe'>%>%</span> f same as f(x)
-- Example:
+- x <span class='emph'>%>%</span> f same as f(x)
+
+Example:
 
 ```{r `%>%`}
 iris %>% head
@@ -16,11 +17,16 @@ head(iris)
 
 
 ## More with pipes
-Other pipes are available with the <span class="pack">magrittr</span> package (and others)
-<span class='pipe'>%\$%</span>  : Exposes the names in the prior to the function after
 
-- x <span class='pipe'>%\$%</span> y(a, b)  same as y(x\$a, x\$b)
-- Example:
+Other pipes are available with the <span class="pack">magrittr</span> package 
+
+- and others
+
+<span class='emph'>%$%</span>: Exposes the names in the prior to the function after
+
+- x <span class='emph'>%\$%</span> y(a, b)  same as y(x\$a, x\$b)
+
+Example (no data argument needed for <span class="func">lm</span>):
 
 ```{r `%$%`}
 iris %$% lm(Sepal.Length ~ Sepal.Width)
@@ -28,11 +34,13 @@ iris %$% lm(Sepal.Length ~ Sepal.Width)
 
 
 ## More with pipes
-<span class='pipe'>%T>%</span> : Passes the prior object to the function after the pipe and what follows
 
-- x <span class='pipe'>%T>%</span> y <span class='pipe'>%>%</span> z is the same as x <span class='pipe'>%>%</span> y & x <span class='pipe'>%>%</span> z
+<span class='emph'>%T>%</span> : Passes to the next ***and*** subsquent steps
+
+- x <span class='emph'>%T>%</span> y <span class='emph'>%>%</span> z is the same as x <span class='emph'>%>%</span> y & x <span class='emph'>%>%</span> z
 
 ## More with pipes
+
 Example:
 
 ```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
@@ -56,12 +64,13 @@ iris %>% select(Sepal.Length, Sepal.Width) %T>% summary %>% plot
 - Somewhat limiting in my opinion.
 
 ## More with pipes
-<span class='pipe'>%<>%</span> : assigns to former object the operations that follow
+
+<span class='emph'>%<>%</span> : assigns to former object the operations that follow
 
 - Example:
 
 ```{r `%<>%`}
-x = rnorm(10)
+x = c(1:3,9:7,10,4:6)
 x %<>% .^2 %>% sort
 x
 ```

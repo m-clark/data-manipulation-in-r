@@ -1,27 +1,28 @@
 
-# Filtering Observations
+## Filtering Observations
 ## Filtering Observations
 
 Recall this bit of code?
 
 ```{r bballRecall, eval=FALSE}
-bball = html(url) %>% 
-  html_nodes("table#totals") %>% 
+bball = read_html(url) %>% 
+  html_nodes("#totals_stats") %>% 
   html_table %>% 
   data.frame %>% 
   filter(Rk != "Rk")
 ```
 
-You will notice the filter line at the end.
+You will notice the <span class="func">filter</span> line at the end
 
-We sometimes want to see a very specific portion of the data.
+We sometimes want to see a very specific portion of the data
 
 
 ## Filtering Observations
+
 >- <span class='func'>filter</span> returns rows with matching conditions.
 >- <span class='func'>slice</span> allows for a numeric indexing approach.
 
->- Say we want too look at forwards over the age of 35...
+>- Say we want too look at forwards (SF or PF) over the age of 35...
 
 ```{r filter1, eval=FALSE}
 bball %>% 
@@ -37,18 +38,19 @@ bball %>%
 
 
 ## Filtering Observations
-This can be done with things that are created on the fly via mutate or other means...
+
+This can be done with things that are created on the fly...
 
 ```{r uniteFilterArrange, cache=TRUE}
 bball %>% 
   unite("posTeam", Pos, Tm) %>%             # create a new variable
   filter(posTeam == "PF_SAS") %>%           # use it for filtering
-  arrange(desc(PTS/PF)) %>% 
+  arrange(desc(PTS/PF)) %>%                 # order by on-the-fly operation
   select(1:10)
 ```
 
 
-# Your turn
+## Your turn
 ## Your turn
 A brief exercise:
 

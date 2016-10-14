@@ -1,47 +1,52 @@
 ---
-title: "Ceci n'est pas une %>%: <br>Exploring Your Data with R"
-author: ""
-
-date: "Winter 2016 Workshop <br> <span style='color:#00274c'>Michael Clark<br>Consulting for Statistics, Computing & Analytics Research<br>Advanced Research Computing</span>"
+title: <span style="font-size:125%; font-variant:small-caps;">Ceci n'est pas une %>% <br>Exploring Your Data with R</span>
+author: |
+  <img src="../WorkshopsRepo/img/Rlogo.svg" style="display:block; margin: 0 auto; width:20%"><br>
+  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br>
+  <span style="font-size:75%; margin: 0 auto;">Statistician Lead</span> <br> 
+  <img src="../WorkshopsRepo/img/CSCAR_logos/signature-acronym.png" style="display:block; width:33%; margin: 0 auto; padding:10px 0;">
+  <img src="../WorkshopsRepo/img/ARC_logos/ARC-acronym-signature.png" style="display:block; width:22%; margin: 0 auto; padding:10px 0;"> </div>
 output: 
+  revealjs::revealjs_presentation:
+    theme: solarized
+    highlight: pygments
+    center: true
+    transition: fade
+    smart: true
+    background_transition: slide
+    css: slides_light.css
   ioslides_presentation: 
     smaller: no
     widescreen: yes
     css: slideStyles.css
-  revealjs::revealjs_presentation:
-    transition: fade
-    css: csstestCSStherealCSSSERIOUSLY.css
-    reveal_options:
-      progress: false
-      previewLinks: true
 
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning=FALSE, R.options=list(width=120))
-library(dplyr); library(magrittr)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning=FALSE, R.options=list(width=120), comment=NA)
+library(tidyverse); library(magrittr)
 ```
 
 ## Preliminaries
-[Link to slides ](www-personal.umich.edu/~micl/mainSlides.html): <br> www-personal.umich.edu/~micl/mainSlides.html
-
-[Link to R package install/load script](www-personal.umich.edu/~micl/installLoadPackages.R):<br> www-personal.umich.edu/~micl/installLoadPackages.R
+[Link to slides ](https://m-clark.github.io/workshops/dplyr/mainSlides.html): <br> https://m-clark.github.io/workshops/dplyr/mainSlides.html
 
 - Start Rstudio
-- Run script (make take a couple minutes)
-- Copy, paste, and run or run the following:
-- <span style="font-family:monospace; font-size:18pt">source("http://www-personal.umich.edu/~micl/installLoadPackages.R")</span>
+- Install the following packages: <span class="pack">dplyr</span>, <span class="pack">tidyverse</span>, <span class="pack">magrittr</span>, <span class="pack">plotly</span>
 
-YOU WILL GET A POP-UNDER WINDOW (on the Windows lab machines).  Affirm that you want to use a personal library.
+<span style="font-variant:small-caps">**You will get a pop-under window on the lab machines!**</span> 
 
+- Affirm that you want to use a personal library.
+
+As we go along, you can install other packages if you want to run the demos (not necessary)
+
+- <span class="pack">magrittr</span>,<span class="pack">plyr</span>,<span class="pack">tidyr</span>,<span class="pack">plotly</span>,<span class="pack">rvest</span>,<span class="pack">stringr</span>,<span class="pack">leaflet</span>
 
 ## The Reference
 
 **The Treachery of Images** by <span class='emph'>Rene Magritte</span>
 
-<div style='text-align:center'>
-<img src='img/MagrittePipe.jpg'></img>
-</div>
+<img src="img/MagrittePipe.jpg" style="display:block; margin: 0 auto;">
+
 
 ## Goals
 >- Introduce newer approaches to data wranging, scrubbing, manipulation etc.
@@ -67,16 +72,16 @@ Nothin's gonna stop the flow
 
 Quick interactive visualizations
 
-- <span class='pack'>ggvis</span>, <span class='pack'>htmlwidgets</span>
+- <span class='pack'>plotly</span>, <span class='pack'>htmlwidgets</span>
     
     
 
-# Newer approaches to <br> data wrangling
+## Newer approaches to <br> data wrangling
 
 ```{r, child='intro.Rmd'}
 ```
 
-# Data Wrangling
+## Data Wrangling
 
 ```{r, child='genData.Rmd'}
 ```
@@ -96,46 +101,49 @@ Quick interactive visualizations
 ```{r, child='moreWithPipes.Rmd'}
 ```
 
-# Piping for Visualization
+## Piping for Visualization
+
 ```{r,  child='pipingViz.Rmd'}
 ```
 
 
 ## Wrap up
+
 Note that much of the functionality you see is in base R
 
 - <span class='func'>with</span>, <span class='func'>within</span>, <span class='func'>tapply</span> etc.
 
-What you now have is a more straightforward way to do those operations.
+Now you now have more flexible approaches
 
-Think of these packages as organizational and exploratory tools.
+Think of these packages as exploratory tools
 
-Use them to bring clarity to code.
+- Use them to bring clarity to code
 
-Use them to explore your data more easily whether for visualization or modeling.
+- Use them to explore your data more easily for visualization and modeling
 
-With more use, the easier it gets, and the more you can do.
+With more use, the easier it gets, and the more you can do
 
 ## Further Resources
+
 [Data wrangling cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 
 [magrittr](https://github.com/smbache/magrittr)
 
-[ggvis](http://ggvis.rstudio.com/)
+[plotly](https://plot.ly/r/)
 
 
 ## Thanks!
-<table class='acknowledge'>
-<tr>
-<td>
-<span style='color:#ffcb05'>Michael Clark</span><br><span style='color:#00274c'>Consulting for Statistics, Computing & Analytics Research<br>Advanced Research Computing<br>University of Michigan</span>
+
+<span style='color:#ffcb05'>Michael Clark</span><br>
+<span style='color:#00274c'>Consulting for Statistics, Computing & Analytics Research<br>Advanced Research Computing<br>
+University of Michigan</span>
 
 <br>
 <span style='color:gray'>With notable assistance from:</span>
 <br>
 
-<span style='color:#dcb439'>Seth Berry</span><br><span style='color:#002b5b'>Center for Social Research<br>Notre Dame Research<br>University of Notre Dame</span>
-</td>
-<td><img src="Rlogo84_2.png" style='size:50%'></img></td>
+<span style='color:#dcb439'>Seth Berry</span><br>
+<span style='color:#002b5b'>Mendoza College of Business<br>
+University of Notre Dame</span>
 
-</table>
+<img src="img/Rlogo84_2.png" style='size:50%'></img>

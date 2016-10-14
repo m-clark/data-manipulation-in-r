@@ -1,7 +1,6 @@
 ## Newer approaches to data wrangling
-A starting example
 
-Let's say we want to select from our data the following variables
+Let's say we want to select the following from our data the following:
 
   - Start with the **ID** variable
   - The variables **X1:X10**, which are not all together, and there are many more *X* columns
@@ -13,7 +12,9 @@ How might we go about this?
 
 ## Some base R approaches
 
-Tedious, or typically two steps just to get the columns you want.
+Typically tedious
+
+Multiple steps just to get the columns you want
 
 ```{r baseRexample1, eval=FALSE}
 # numeric indexes; not conducive to readibility or reproducibility
@@ -58,11 +59,13 @@ newData = oldData %>%
 ## An alternative
 
 
-Piping is an *alternative*, but you can do all this sort of stuff with base R
+Piping is an *alternative*
+
+You can do all this sort of stuff with base R
 
 - <span class="func">with</span>, <span class="func">within</span>, <span class="func">subset</span>, <span class="func">$</span>, etc.
 
-Even though the initial base R approach depicted is fairly concise, it still can be potentially: 
+While the base R approach can be concise, it is potentially: 
 
 >- noisier
 >- less legible
@@ -71,6 +74,7 @@ Even though the initial base R approach depicted is fairly concise, it still can
 >- often requires new objects (even if we just want to explore)
 
 ## Piping
+
 <span class='pipe'>%>%</span> : Passes the prior object to the function after the pipe
 
 - x <span class='pipe'>%>%</span> f same as f(x)
@@ -80,7 +84,8 @@ object %>% function
 ```
 
 
-# Another example...
+## Another example...
+
 ## Start with a string, end with a map
 
 ```{r wikileafletNoEval, eval=FALSE}
@@ -98,9 +103,9 @@ wikiURL %>%
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'),                   # grab any that start with - or number
          lat = sapply(latlon, first),                                               # grab latitudes
          lon = sapply(latlon, nth, 2),                                              # grab longitude
-         population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),     # remove commas from numbers (why do people do this?)
+         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),     # remove commas from numbers (why do people do this?)
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),       # same for 2010
-         popDiff  = round(population2014/population2010 - 1, 2)*100) %>%            # create percentage difference
+         popDiff  = round(population2015/population2010 - 1, 2)*100) %>%            # create percentage difference
 ```
 
 
@@ -108,24 +113,22 @@ wikiURL %>%
 
 ```{r wikileafletNoEval2, eval=FALSE}
   select(-latlon, -Location) %>%                                                    # remove stuff we wouldn't ever use
-  filter(as.numeric(as.character(X2014.rank)) <= 50)  %>%                           # top 50
-  leaflet %>%                                                                       # map out
-  addProviderTiles("CartoDB.DarkMatterNoLabels") %>% 
-  setView(-94, 35, zoom = 4) %>% 
-  addCircleMarkers(~lon, ~lat,
-                   radius=  ~scales::rescale(popDiff, c(1, 10)),
-                   fillColor=  ~pal(popDiff), stroke = FALSE, fillOpacity = .85,
-                   popup=  ~paste(City, paste0(popDiff, '%')))
+  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>%                           # top 50
+  plot_geo(locationmode = 'USA-states', sizes = c(1, 250)) %>%                      # map with plotly
+  add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', 
+              color=~popDiff, hoverinfo='text', colors='RdBu',
+              text=~hovertext, marker = list(opacity = 0.5)) %>%  
+  layout(title = 'Largest US cities and their 2010-2015 change <br>(Click legend to toggle)', 
+         geo = g, paper_bgcolor='#fdf6e3')
+
+# g is a list of map options, e.g. projection line colors etc.
 ```
 
 
 ## And the result...
 
-```{r wikileaflet, eval=TRUE, echo=FALSE}
-# packs = c('magrittr', 'rvest', 'dplyr', 'stringr' ,'leaflet', 'ggvis')
-# sapply(packs, library, character.only=T); DONT USE
-library(magrittr); library(rvest); library(dplyr); library(stringr);
-library(leaflet)
+```{r wikileaflet, eval=F, echo=FALSE}
+library(rvest); library(stringr); library(leaflet)
 
 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population' %>% 
   read_html %>% 
@@ -138,11 +141,11 @@ library(leaflet)
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
          lat = sapply(latlon, first),
          lon = sapply(latlon, nth, 2), 
-         population2014 = as.numeric(str_replace_all(X2014.estimate, ',', '')),
+         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
-         popDiff  = round(population2014/population2010 - 1, 2)*100) %T>% 
+         popDiff  = round(population2015/population2010 - 1, 2)*100) %T>% 
   select(-latlon, -Location) %>% 
-  filter(as.numeric(as.character(X2014.rank)) <= 50)  %>% 
+  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>% 
   leaflet %>% 
   addProviderTiles("CartoDB.DarkMatterNoLabels") %>% 
   setView(-94, 35, zoom = 4) %>% 
@@ -153,32 +156,74 @@ library(leaflet)
                    popup=  ~paste(City, paste0(popDiff, '%')))
 ```
 
+```{r plotlyMap, echo=FALSE}
+library(rvest); library(stringr); library(plotly)
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showland = TRUE,
+  landcolor = toRGB("gray90"),
+  showlakes=F,
+  oceancolor= toRGB('red'),
+  subunitwidth = 1,
+  countrywidth = 1,
+  subunitcolor = toRGB('#fdf6e3'),
+  countrycolor = toRGB('#fdf6e3'),
+  bgcolor = toRGB('#fdf6e3')
+)
+
+'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population' %>% 
+  read_html %>% 
+  html_node(css='.wikitable.sortable') %>% 
+  html_table %>% 
+  sapply(function(x) repair_encoding(as.character(x), 'UTF-8'), simplify=F) %>%
+  data.frame %>%  
+  mutate(City = str_replace(City, '\\[(.*?)\\]', ''),
+         latlon = sapply(str_split(Location, '/'), last), 
+         latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
+         lat = sapply(latlon, first),
+         lon = sapply(latlon, nth, 2), 
+         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),
+         population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
+         popDiff  = round(population2015/population2010 - 1, 2)*100,
+         hovertext = paste(City, "<br />", paste0(popDiff, '%'))) %T>% 
+  select(-latlon, -Location) %>% 
+  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>% 
+  plot_geo(locationmode = 'USA-states', sizes = c(1, 250)) %>%
+  add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', color=~popDiff, hoverinfo='text', colors='RdBu',
+              text=~hovertext, marker = list(opacity = 0.5)) %>%  
+  layout(title = 'Largest US cities and their 2010-2015 change <br>(Click legend to toggle)', 
+         geo = g, paper_bgcolor='#fdf6e3')
+
+```
 
 ## 
 
 - In the interests of your own code, the previous is not recommended.
 
 - It serves as an illustration of what's possible.
->- Key commands: mutate, select, filter
->- Autocomplete for unquoted variable names
->- Pipe to other functions (e.g. viz)
+
+    >- Key commands: mutate, select, filter
+    >- Autocomplete for unquoted variable names
+    >- Pipe to other functions (e.g. viz)
 
 
 ## Newer approaches to data wrangling
-Over the past couple of years, a handful of packages have been put out that make data management within R noticeably easier
+
+Packages have been created to make data wrangling easier
 
 We will focus on <span class='pack'>plyr</span>, <span class='pack'>dplyr</span>, and <span class='pack'>tidyr</span>
 
-But others, e.g. <span class='pack'>data.table</span>, take different approaches and may be useful as well
+But others, e.g. <span class='pack'>data.table</span>, may be useful as well
 
-Newer visualization packages take advantage of these approaches to data manipulation
+Newer visualization packages work similarly
 
 - Makes it easier to explore your data visually
 
 
 
-# A provocation
-
+## A provocation
+<div style='font-size:150%'>
 ```{r provocation1, eval=F, echo=T}
 c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 {
@@ -188,6 +233,8 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
   ..(.)
 } 
 ```
+</div>
+
 
 ##
 
@@ -205,7 +252,7 @@ c('Ceci', "n'est", 'pas', 'une', 'pipe!') %>%
 
 
 
-# Your turn
+## Your turn...
 ## Your turn
 Let's get to it!
 

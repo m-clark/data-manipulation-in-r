@@ -1,9 +1,9 @@
-# Grouping and Summarizing Data
+## Grouping and Summarizing Data
 ## Grouping and Summarizing Data
 
-When working with data, a very common task is to look at descriptive statistics for various groups.
+A very common task is to look at group-based statistics
 
-We can use <span class='func'>group_by</span> to make this straightforward.
+We can use <span class='func'>group_by</span> to make this straightforward
 
 ```{r groupby, eval=TRUE, cache=TRUE}
 scoringDat %>% 
@@ -12,19 +12,20 @@ scoringDat %>%
 ```
 
 
-# Your Turn
+## Your Turn
 ## Putting it all together
-?state.x77
+
+`?state.x77`
 
 Using one pipe sequence 
 
-1. convert state.x77 (a base R object) to a data frame (<span class='func'>data.frame</span> )
-2. create a new variable called **Region** that is equal to state.region (<span class='func'>mutate</span> )
-3. create a new variable called **State** that is equal to state.name
+1. convert <span class="objclass">state.x77</span> (a base R object) to a data frame (<span class='func'>data.frame</span> )
+2. create a new variable called **Region** that is equal to <span class="objclass">state.region</span> (<span class='func'>mutate</span> )
+3. create a new variable called **State** that is equal to <span class="objclass">state.name</span>
 4. <span class='func'>filter</span> only if Population is greater than 1000 (thousands)
 5. <span class='func'>select</span> **Region** and variables beginning with I
 6. group by **Region**  (<span class='func'>group_by</span> )
-7. <span class='func'>summarize</span> **Income**, **Illiteracy** or **Both**, using the mean function
+7. <span class='func'>summarize</span> **Income**, **Illiteracy** or **Both**, using the <span class="func">mean</span> function
 
 ## Example
 ```{r yourturnDataManipExample, eval=TRUE, cache=TRUE}
