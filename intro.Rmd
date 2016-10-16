@@ -1,9 +1,9 @@
 ## Newer approaches to data wrangling
 
-Let's say we want to select the following from our data the following:
+Let's say we want to select the following from our data:
 
   - Start with the **ID** variable
-  - The variables **X1:X10**, which are not all together, and there are many more *X* columns
+  - The variables **X1:X10**, which are not all together, not the only X* variables
   - The variables **var1** and **var2**, which are the only *var* variables in the data
   - Any variable that starts with **XYZ**
     
@@ -80,9 +80,12 @@ While the base R approach can be concise, it is potentially:
 - x <span class='pipe'>%>%</span> f same as f(x)
 
 ```{r eval=FALSE}
-object %>% function
+object %>% function(object)
 ```
 
+## Piping
+
+<img src="img/pipeExplained.png" style="display:block; margin: 0 auto;">
 
 ## Another example...
 
@@ -93,11 +96,11 @@ wikiURL = 'https://en.wikipedia.org/wiki/List_of_United_States_cities_by_populat
 
 # Let's go!
 wikiURL %>% 
-  read_html %>%                                                                     # parse the html
+  read_html() %>%                                                                   # parse the html
   html_node(css='.wikitable.sortable') %>%                                          # grab a class of object
-  html_table %>%                                                                    # convert table to data.frame
+  html_table() %>%                                                                  # convert table to data.frame
   sapply(function(x) repair_encoding(as.character(x), 'UTF-8')) %>%                 # repair encoding; makes a matrix
-  data.frame %>%                                                                    # back to df
+  data.frame() %>%                                                                  # back to df
   mutate(City = str_replace(City, '\\[(.*?)\\]', ''),                               # remove footnotes
          latlon = sapply(str_split(Location, '/'), last),                           # split up location (3 parts)
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'),                   # grab any that start with - or number
@@ -118,7 +121,7 @@ wikiURL %>%
   add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', 
               color=~popDiff, hoverinfo='text', colors='RdBu',
               text=~hovertext, marker = list(opacity = 0.5)) %>%  
-  layout(title = 'Largest US cities and their 2010-2015 change <br>(Click legend to toggle)', 
+  layout(title = 'Largest US cities and their 2010-2015 change', 
          geo = g, paper_bgcolor='#fdf6e3')
 
 # g is a list of map options, e.g. projection line colors etc.
@@ -192,7 +195,7 @@ g <- list(
   plot_geo(locationmode = 'USA-states', sizes = c(1, 250)) %>%
   add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', color=~popDiff, hoverinfo='text', colors='RdBu',
               text=~hovertext, marker = list(opacity = 0.5)) %>%  
-  layout(title = 'Largest US cities and their 2010-2015 change <br>(Click legend to toggle)', 
+  layout(title = 'Largest US cities and their 2010-2015 population change', 
          geo = g, paper_bgcolor='#fdf6e3')
 
 ```
@@ -203,9 +206,9 @@ g <- list(
 
 - It serves as an illustration of what's possible.
 
-    >- Key commands: mutate, select, filter
+    >- Key commands: <span class="func">mutate</span>, <span class="func">select</span>, <span class="func">filter</span>
     >- Autocomplete for unquoted variable names
-    >- Pipe to other functions (e.g. viz)
+    >- Pipe to other functions (e.g. visualization)
 
 
 ## Newer approaches to data wrangling

@@ -1,5 +1,5 @@
-
 ## Filtering Observations
+
 ## Filtering Observations
 
 Recall this bit of code?
@@ -54,9 +54,11 @@ bball %>%
 ## Your turn
 A brief exercise:
 
-1. <span class='func'>filter</span> the iris data set to only the `r "virginica"` species (var <span class='func'>==</span> value)
-2. show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span> )
-3. bonus: redo, but instead, filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. Which species do these observations belong to?
+- $1.$ <span class='func'>filter</span> the iris data set to only the `r "virginica"` species (var <span class='func'>==</span> value)
+- $2.$ show only **Petal.Length** and **Petal.Width** variables (<span class='func'>select</span>)
+- $3.$ bonus: redo, but instead, filter if the ratio of **Petal.Length** to **Petal.Width** is greater than 5. 
+    
+- Which species do these observations belong to?
 
 
 ## Example

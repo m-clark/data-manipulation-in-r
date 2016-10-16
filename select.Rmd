@@ -1,8 +1,8 @@
-
-## Selecting Variables
 ## Selecting Variables
 
-Often you do not need the entire dataset
+## Selecting Variables
+
+Often you do not need the entire data set
 
 - Want to focus on a few key variables
 
@@ -21,7 +21,7 @@ bball %>%
 
 ## Selecting Variables
 
-That works great, but what if we want to drop some variables?
+What if we want to drop some variables?
 
 - Need numeric only for correlation
 

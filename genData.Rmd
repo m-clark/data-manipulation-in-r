@@ -1,7 +1,8 @@
 ## Generating New Data
+
 ## Generating New Data
 
-We often want to calculate new variables based upon existing ones
+We often want to calculate new variables
 
 Or perhaps make changes to ones we have
 
@@ -27,9 +28,12 @@ bball = read_html(url) %>%
 
 
 ## Generating New Data
-The data is currently all character strings.
 
-We'll use <span class='func'>mutate_all</span> to make every column numeric except for Player, Pos, and Tm.
+The data is currently all character strings
+
+We'll use <span class='func'>mutate_all</span> to make appropriate columns numeric
+
+- Not Player, Pos, and Tm.
 
 ```{r mutateEach, cache=TRUE}
 glimpse(bball[,1:5])
@@ -42,8 +46,7 @@ glimpse(bball[,1:5])
 
 
 ## Mutate
-<div class="columns-2">
-<span class='func'>mutate</span> takes a vector and returns a vector of the same dimension
+<span class='func'>mutate</span> takes a vector and returns one of the same dimension
 
 - 'window' function
 
@@ -51,15 +54,7 @@ glimpse(bball[,1:5])
 We will contrast it with <span class='func'>summarize</span> later
 
 - or <span class='func'>summarise</span> if you prefer
-<br>
-<br>
-<br>
-<br>
-
-
-<img src="img/window.png" style="width:25%"></img>
-<img src="img/summary.png" style="width:25%"></img>
-</div>
+- Takes a vector and returns smaller one (aggregates)
 
 
 ## Generating New Data
@@ -120,12 +115,13 @@ bball %>%
 
 Data: state.x77
 
-0. Convert to <span class='func'>data.frame</span>
-1. Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span> )
-2. Create <span class="objclass">curLifeExp</span> as Life Expectancy (<span class="objclass">Life.Exp</span>) + 5 (<span class='func'>mutate</span> )
-3. summarize the data (<span class='func'>summary</span> )
+- $0.$ Convert to <span class='func'>data.frame</span>
+- $1.$ Create a variable that's the <span class='func'>log</span> of population (<span class='func'>mutate</span> )
+- $2.$ Create <span class="objclass">curLifeExp</span> as Life Expectancy (<span class="objclass">Life.Exp</span>) + 5 (<span class='func'>mutate</span> 
+- $3.$ Summarize the data (<span class='func'>summary</span> )
 
 ## Example
+
 ```{r yourTurnMutateExample, cache=TRUE}
 state.x77 %>% 
   data.frame %>% 

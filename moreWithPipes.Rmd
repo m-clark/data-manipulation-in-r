@@ -1,5 +1,5 @@
-
 ## Nothin's gonna stop the flow
+
 ## More with pipes
 
 Recap thus far:
@@ -18,9 +18,7 @@ head(iris)
 
 ## More with pipes
 
-Other pipes are available with the <span class="pack">magrittr</span> package 
-
-- and others
+Other pipes are available with <span class="pack">magrittr</span> and other packages
 
 <span class='emph'>%$%</span>: Exposes the names in the prior to the function after
 
@@ -35,7 +33,7 @@ iris %$% lm(Sepal.Length ~ Sepal.Width)
 
 ## More with pipes
 
-<span class='emph'>%T>%</span> : Passes to the next ***and*** subsquent steps
+<span class='emph'>%T>%</span> : Passes to the next ***and*** subsequent steps
 
 - x <span class='emph'>%T>%</span> y <span class='emph'>%>%</span> z is the same as x <span class='emph'>%>%</span> y & x <span class='emph'>%>%</span> z
 
@@ -45,11 +43,13 @@ Example:
 
 ```{r Tpipe, fig.width=3, fig.height=3, echo=-1}
 # par(mai=c(.1,.1,.1,.1), pch=19, byt='n')
-iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>%summary
+iris %>% select(Sepal.Length, Sepal.Width) %T>% plot %>% summary
 ```
 
+
 ## More with pipes
-Unfortunately the T pipe does not allow for printable results.
+
+Unfortunately the T pipe does not allow for some things
 
 - Works:
 ```{r Tprobs1, eval=FALSE}
@@ -62,6 +62,7 @@ iris %>% select(Sepal.Length, Sepal.Width) %T>% summary %>% plot
 ```
 
 - Somewhat limiting in my opinion.
+
 
 ## More with pipes
 

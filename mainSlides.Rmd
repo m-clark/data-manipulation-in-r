@@ -1,11 +1,11 @@
 ---
 title: <span style="font-size:125%; font-variant:small-caps;">Ceci n'est pas une %>% <br>Exploring Your Data with R</span>
 author: |
-  <img src="../WorkshopsRepo/img/Rlogo.svg" style="display:block; margin: 0 auto; width:20%"><br>
+  <img src="../../Workshops/img/Rlogo.svg" style="display:block; margin: 0 auto; width:20%"><br>
   <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br>
-  <span style="font-size:75%; margin: 0 auto;">Statistician Lead</span> <br> 
-  <img src="../WorkshopsRepo/img/CSCAR_logos/signature-acronym.png" style="display:block; width:33%; margin: 0 auto; padding:10px 0;">
-  <img src="../WorkshopsRepo/img/ARC_logos/ARC-acronym-signature.png" style="display:block; width:22%; margin: 0 auto; padding:10px 0;"> </div>
+  <span style="font-size:75%; margin: 0 auto;">Statistician Lead</span> <br>
+  <img src="../../Workshops/img/CSCAR_logos/signature-acronym.png" style="display:block; width:33%; margin: 0 auto; padding:10px 0;">
+  <img src="../../Workshops/img/ARC_logos/ARC-acronym-signature.png" style="display:block; width:22%; margin: 0 auto; padding:10px 0;"> </div>
 output: 
   revealjs::revealjs_presentation:
     theme: solarized
@@ -28,6 +28,7 @@ library(tidyverse); library(magrittr)
 ```
 
 ## Preliminaries
+
 [Link to slides ](https://m-clark.github.io/workshops/dplyr/mainSlides.html): <br> https://m-clark.github.io/workshops/dplyr/mainSlides.html
 
 - Start Rstudio
@@ -39,16 +40,17 @@ library(tidyverse); library(magrittr)
 
 As we go along, you can install other packages if you want to run the demos (not necessary)
 
-- <span class="pack">magrittr</span>,<span class="pack">plyr</span>,<span class="pack">tidyr</span>,<span class="pack">plotly</span>,<span class="pack">rvest</span>,<span class="pack">stringr</span>,<span class="pack">leaflet</span>
+- <span class="pack">magrittr</span>, <span class="pack">plyr</span>,<span class="pack">tidyr</span>, <span class="pack">plotly</span>, <span class="pack">rvest</span>, <span class="pack">stringr</span>, <span class="pack">leaflet</span>
 
 ## The Reference
 
-**The Treachery of Images** by <span class='emph'>Rene Magritte</span>
+<div style='text-align:center'>**The Treachery of Images** by <span class='emph'>Rene Magritte</span></div>
 
 <img src="img/MagrittePipe.jpg" style="display:block; margin: 0 auto;">
 
 
 ## Goals
+
 >- Introduce newer approaches to data wranging, scrubbing, manipulation etc.
 
 >- Show the benefits of <span class='emph'>*piping*</span> code
@@ -132,18 +134,16 @@ With more use, the easier it gets, and the more you can do
 [plotly](https://plot.ly/r/)
 
 
-## Thanks!
+## Thanks! {.col2}
 
 <span style='color:#ffcb05'>Michael Clark</span><br>
-<span style='color:#00274c'>Consulting for Statistics, Computing & Analytics Research<br>Advanced Research Computing<br>
+<span style='color:#00274c; font-size:50%'>Consulting for Statistics, Computing & Analytics Research<br>Advanced Research Computing<br>
 University of Michigan</span>
 
-<br>
-<span style='color:gray'>With notable assistance from:</span>
-<br>
+<span style='color:gray; font-size:50%'>With notable assistance from:</span>
 
 <span style='color:#dcb439'>Seth Berry</span><br>
-<span style='color:#002b5b'>Mendoza College of Business<br>
+<span style='color:#002b5b; font-size:50%'>Mendoza College of Business<br>
 University of Notre Dame</span>
-
-<img src="img/Rlogo84_2.png" style='size:50%'></img>
+<br><br><br><br><br><br>
+<img src="img/R84_hp.png" style='width:50%'></img>

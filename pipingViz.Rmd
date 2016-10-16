@@ -1,9 +1,10 @@
+## Piping for Visualization
 
 ## Piping for Visualization
 
-One of the advantages to piping is that it's not limited to dplyr style data management functions.
+Piping is not limited to data management functions
 
-<span class='emph'>*Any*</span> R function can be potentially piped to, and we've seen several examples so far.
+<span class='emph'>*Any*</span> R function can be potentially piped to
 
 ```{r}
 data.frame(y=rnorm(100), x=rnorm(100)) %$%
@@ -14,31 +15,41 @@ This facilitates data exploration
 
 
 ## htmlwidgets
-Many newer visualization packages take advantage of piping as well.
 
-<span class='pack'>htmlwidgets</span> is a package that makes it easy to use R to create javascript visualizations.
+Many newer visualization packages take advantage of piping
+
+<span class='pack'>htmlwidgets</span> makes it easy to create interactive, js-based visualizations
 
 - i.e. what you see everywhere on the web.
 
-The packages using it typically are pipe-oriented and produce interactive plots.
-
 
 ## Some htmlwidgets packages
-- <span class='pack'>leaflet</span>
-    - maps with OpenStreetMap
-- <span class='pack'>dygraphs</span>
-    - time series visualization
-- <span class='pack'>networkD3</span>
-    - Network visualization with D3
-- <span class='pack'>DT</span>
-    - Tabular data via DataTables
-- <span class='pack'>rthreejs</span>
-    - 3D graphics
+
+
+<span class='pack'>leaflet</span>
+
+- maps with OpenStreetMap
+
+<span class='pack'>dygraphs</span>
+
+- time series visualization
+
+<span class='pack'>networkD3</span>
+
+- Network visualization with D3
+
+<span class='pack'>DT</span>
+
+- Tabular data via DataTables
+
+<span class='pack'>rthreejs</span>
+
+- 3D graphics
 
 
 ## leaflet
 
-Use  <span class='pack'>leaflet</span> for quick and easy maps.
+Use  <span class='pack'>leaflet</span> for quick and easy maps
 
 ```{r leafletExample, echo=-1, eval=F}
 library(leaflet)
@@ -48,7 +59,7 @@ leaflet() %>%
   addPopups(lat=42.2655, lng=-83.7485, 'Hi!')
 ```
 
-<img src="img/leafletpngbecauseleafletneverworksinslides.png" style="display:block; margin: 0 auto; width:25%">
+<img src="img/leafletpngbecauseleafletneverworksinslides.png" style="display:block; margin: 0 auto; width:50%">
 
 ## dygraphs
 
