@@ -1,7 +1,5 @@
 ## Piping for Visualization
 
-## Piping for Visualization
-
 Piping is not limited to data management functions
 
 <span class='emph'>*Any*</span> R function can be potentially piped to
@@ -16,12 +14,13 @@ This facilitates data exploration
 
 ## htmlwidgets
 
-Many newer visualization packages take advantage of piping
+Many newer interactive visualization packages take advantage of piping
 
-<span class='pack'>htmlwidgets</span> makes it easy to create interactive, js-based visualizations
+<span class='pack'>htmlwidgets</span> makes it easy to create js-based visualizations
 
 - i.e. what you see everywhere on the web.
 
+<img src="../WorkshopsRepo/img/javascript.png" style="display:block; margin: 0 auto;">
 
 ## Some htmlwidgets packages
 
@@ -134,7 +133,7 @@ with additional options if needed.
 
 Layers are added through this same piping system.
 
-```{r plotlyDemo, eval=FALSE}
+```{r plotlyDemo, eval=FALSE, cache=FALSE}
 library(plotly)
 bballLong %>% 
   group_by(Tm, vitalInfo) %>%
@@ -152,13 +151,6 @@ bballLong %>%
 Using plotly and the data set mtcars, we'll create a grouped scatterplot without creating any new objects.
 
 
-Step 0- Run the following 
-
-```{r, eval=FALSE}
-pred1 = predict(lm(mpg~hp, data=mtcars))
-```
-
-
 <div style='font-size:18pt'>
 Now, starting with your with the mtcars data set:
 
@@ -167,7 +159,6 @@ Now, starting with your with the mtcars data set:
 2. Create your base plot (<span class='func'>plot_ly</span> )
 3. Make a scatterplot (<span class='func'>add_markers</span> ) of weight (wt) and miles per gallon (mpg) 
     - color = amFactor 
-4. add (<span class='func'>add_lines</span> ) with your **prediction** object
 </div>
 
 
@@ -175,6 +166,9 @@ Now, starting with your with the mtcars data set:
 
 ```{r plotlyExample, eval=FALSE}
 prediction = predict(lm(mpg~wt, data=mtcars))
+
+library(plotly)
+
 mtcars %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
   plot_ly(width=300, height=200) %>% 
@@ -197,6 +191,7 @@ library(mgcv); library(plotly)
 prediction_lm = predict(lm(mpg~wt, data=mtcars))
 prediction_gam = predict(gam(mpg~s(wt), data=mtcars))
 preddat = data.frame(mtcars, prediction_lm, prediction_gam) %>% arrange(wt)
+
 preddat %>% 
   mutate(amFactor = factor(am, labels=c('auto', 'manual'))) %>% 
   plot_ly(x=~wt, y=~mpg, color=~amFactor, hover=c(~wt, ~mpg), 

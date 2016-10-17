@@ -33,7 +33,10 @@ newData = subset(oldData, select = cols)
 
 
 ## More
-What if you also want observations where **Z** is **Yes**, Q is **No**, and only the last 50 of those results, ordered by **var1** (descending)?
+
+What if you also want observations where **Z** is **Yes**, Q is **No**
+ordered by **var1** (descending)...
+and only the last 50 of those results?
 
 ```{r baseRexample2, eval=FALSE}
 # three operations and overwriting or creating new objects if we want clarity
@@ -51,8 +54,8 @@ And this is for fairly straightforward operations.
 newData = oldData %>% 
   filter(Z == 'Yes', Q == 'No') %>% 
   select(num_range('X', 1:10), contains('var'), starts_with('XYZ')) %>% 
-  tail(50) %>% 
-  arrange(desc(var1))
+  arrange(desc(var1)) %>% 
+  tail(50)
 ```
 
 
@@ -202,13 +205,16 @@ g <- list(
 
 ## 
 
-- In the interests of your own code, the previous is not recommended.
+For your own code, try a more concise approach
 
-- It serves as an illustration of what's possible.
+- Better to do the parsed page, data stuff, and plot as separate steps
 
-    >- Key commands: <span class="func">mutate</span>, <span class="func">select</span>, <span class="func">filter</span>
-    >- Autocomplete for unquoted variable names
-    >- Pipe to other functions (e.g. visualization)
+
+However, it serves as an illustration of what's possible
+
+>- Key commands: <span class="func">mutate</span>, <span class="func">select</span>, <span class="func">filter</span>
+>- Autocomplete for unquoted variable names
+>- Pipe to other functions (e.g. visualization)
 
 
 ## Newer approaches to data wrangling
@@ -268,7 +274,7 @@ data %>%
   function
 ```
 
->- If the function you use has additional arguments you want to try, put those arguments in parentheses:
+>- Use additional arguments if you want:
 
 ```{r pipewithargs, eval=FALSE}
 data %>% 

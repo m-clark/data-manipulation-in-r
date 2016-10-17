@@ -4,14 +4,39 @@
 
 A very common task is to look at group-based statistics
 
-We can use <span class='func'>group_by</span> to make this straightforward
+We can use <span class='func'>group_by</span> and <span class="func">summarize</span>
 
 ```{r groupby, eval=TRUE, cache=TRUE}
 scoringDat %>% 
-  group_by(Pos) %>% 
-  summarize(meanTrueShooting = mean(trueShooting, na.rm = TRUE))
+  group_by(Pos) %>%                                                 # can group by more than one variable
+  summarize(meanTrueShooting = mean(trueShooting, na.rm = TRUE))    # potentially any function can work
 ```
 
+## Grouping and Summarizing Data
+
+Use do on grouped data to go further
+
+```{r do, cache=T}
+state.x77 %>% 
+  data.frame() %>% 
+  mutate(Region=state.region) %>% 
+  group_by(Region) %>% 
+  do(PopIncCorr=cor(.$Population, .$Income)) %>%  
+  data.frame()
+```
+
+## Grouping and Summarizing Data
+
+Use do on grouped data to go further
+
+```{r do2, eval=1:4}
+library(nycflights13)
+carriers = group_by(flights, carrier)
+group_size(carriers)
+
+mods = do(carriers, mod = lm(arr_delay ~ dep_time, data = .)) # reminder that data frames are lists
+sapply(mods$mod, summary)
+```
 
 ## Your Turn
 ## Putting it all together

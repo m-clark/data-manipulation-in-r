@@ -4,9 +4,7 @@
 
 Often you do not need the entire data set
 
-- Want to focus on a few key variables
-
-Easily handled in base R (as shown earlier), 
+Easily handled in base R (as shown earlier)
 
 It can be more clear to use <span class="func">select</span> in <span class='pack'>dplyr</span>
 
@@ -23,7 +21,7 @@ bball %>%
 
 What if we want to drop some variables?
 
-- Need numeric only for correlation
+- Can't calculate correlation on the string variables, so drop
 
 ```{r select2, cache=TRUE}
 scoringDat = bball %>%                                               # creating object as we will come back to it later
