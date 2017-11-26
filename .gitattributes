@@ -1,5 +1,6 @@
 *.html linguist-generated
 *.js linguist-generated
+*reveal.js* linguist-generated
 *.css linguist-vendored
 *.stan linguist-language=Stan
 
