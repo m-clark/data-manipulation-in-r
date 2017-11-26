@@ -1,4 +1,5 @@
 *.html linguist-generated
+*.js linguist-generated
 *.css linguist-vendored
 *.stan linguist-language=Stan
 
