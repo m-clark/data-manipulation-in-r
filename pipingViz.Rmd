@@ -20,7 +20,7 @@ Many newer interactive visualization packages take advantage of piping
 
 - i.e. what you see everywhere on the web.
 
-<img src="../WorkshopsRepo/img/javascript.png" style="display:block; margin: 0 auto;">
+<img src="../Workshops/img/javascript.png" style="display:block; margin: 0 auto;">
 
 ## Some htmlwidgets packages
 

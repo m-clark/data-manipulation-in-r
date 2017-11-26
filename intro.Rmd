@@ -109,9 +109,9 @@ wikiURL %>%
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'),                   # grab any that start with - or number
          lat = sapply(latlon, first),                                               # grab latitudes
          lon = sapply(latlon, nth, 2),                                              # grab longitude
-         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),     # remove commas from numbers (why do people do this?)
+         population2016 = as.numeric(str_replace_all(X2016.estimate, ',', '')),     # remove commas from numbers (why do people do this?)
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),       # same for 2010
-         popDiff  = round(population2015/population2010 - 1, 2)*100) %>%            # create percentage difference
+         popDiff  = round(population2016/population2010 - 1, 2)*100) %>%            # create percentage difference
 ```
 
 
@@ -119,12 +119,12 @@ wikiURL %>%
 
 ```{r wikileafletNoEval2, eval=FALSE}
   select(-latlon, -Location) %>%                                                    # remove stuff we wouldn't ever use
-  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>%                           # top 50
+  filter(as.numeric(as.character(X2016.rank)) <= 50)  %>%                           # top 50
   plot_geo(locationmode = 'USA-states', sizes = c(1, 250)) %>%                      # map with plotly
   add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', 
               color=~popDiff, hoverinfo='text', colors='RdBu',
               text=~hovertext, marker = list(opacity = 0.5)) %>%  
-  layout(title = 'Largest US cities and their 2010-2015 change', 
+  layout(title = 'Largest US cities and their 2010-2016 change', 
          geo = g, paper_bgcolor='#fdf6e3')
 
 # g is a list of map options, e.g. projection line colors etc.
@@ -147,11 +147,11 @@ library(rvest); library(stringr); library(leaflet)
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
          lat = sapply(latlon, first),
          lon = sapply(latlon, nth, 2), 
-         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),
+         population2016 = as.numeric(str_replace_all(X2016.estimate, ',', '')),
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
-         popDiff  = round(population2015/population2010 - 1, 2)*100) %T>% 
+         popDiff  = round(population2016/population2010 - 1, 2)*100) %T>% 
   select(-latlon, -Location) %>% 
-  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>% 
+  filter(as.numeric(as.character(X2016.rank)) <= 50)  %>% 
   leaflet %>% 
   addProviderTiles("CartoDB.DarkMatterNoLabels") %>% 
   setView(-94, 35, zoom = 4) %>% 
@@ -189,16 +189,16 @@ g <- list(
          latlon = str_extract_all(latlon, '[-|[0-9]]+\\.[0-9]+'), 
          lat = sapply(latlon, first),
          lon = sapply(latlon, nth, 2), 
-         population2015 = as.numeric(str_replace_all(X2015.estimate, ',', '')),
+         population2016 = as.numeric(str_replace_all(X2016.estimate, ',', '')),
          population2010 = as.numeric(str_replace_all(X2010.Census, ',', '')),
-         popDiff  = round(population2015/population2010 - 1, 2)*100,
+         popDiff  = round(population2016/population2010 - 1, 2)*100,
          hovertext = paste(City, "<br />", paste0(popDiff, '%'))) %T>% 
   select(-latlon, -Location) %>% 
-  filter(as.numeric(as.character(X2015.rank)) <= 50)  %>% 
+  filter(as.numeric(as.character(X2016.rank)) <= 50)  %>% 
   plot_geo(locationmode = 'USA-states', sizes = c(1, 250)) %>%
   add_markers(x = ~lon, y = ~lat, size = ~abs(popDiff), hoverinfo='text', color=~popDiff, hoverinfo='text', colors='RdBu',
               text=~hovertext, marker = list(opacity = 0.5)) %>%  
-  layout(title = 'Largest US cities and their 2010-2015 population change', 
+  layout(title = 'Largest US cities and their 2010-2016 population change', 
          geo = g, paper_bgcolor='#fdf6e3')
 
 ```

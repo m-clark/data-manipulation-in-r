@@ -43,7 +43,7 @@ We'll use <span class='func'>mutate_at</span> to make appropriate columns numeri
 
 ```{r mutateAt, cache=TRUE}
 bball = bball %>% 
-  mutate_at(funs(as.numeric), .cols=vars(-Player, -Pos, -Tm))   
+  mutate_at(vars(-Player, -Pos, -Tm), funs(as.numeric))   
 
 glimpse(bball[,1:7])
 ```

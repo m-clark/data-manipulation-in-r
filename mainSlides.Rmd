@@ -1,11 +1,11 @@
 ---
 title: <span style="font-size:125%; font-variant:small-caps;">Ceci n'est pas une %>% <br>Exploring Your Data with R</span>
 author: |
-  <img src="../WorkshopsRepo/img/Rlogo.svg" style="display:block; margin: 0 auto; width:20%"><br>
+  <img src="../Workshops/img/Rlogo.svg" style="display:block; margin: 0 auto; width:20%"><br>
   <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br>
   <span style="font-size:75%; margin: 0 auto;">Statistician Lead</span> <br>
-  <img src="../WorkshopsRepo/img/CSCAR_logos/signature-acronym.png" style="display:block; width:33%; margin: 0 auto; padding:10px 0;">
-  <img src="../WorkshopsRepo/img/ARC_logos/ARC-acronym-signature.png" style="display:block; width:22%; margin: 0 auto; padding:10px 0;"> </div>
+  <img src="../Workshops/img/CSCAR_logos/signature-acronym.png" style="display:block; width:33%; margin: 0 auto; padding:10px 0;">
+  <img src="../Workshops/img/ARC_logos/ARC-acronym-signature.png" style="display:block; width:22%; margin: 0 auto; padding:10px 0;"> </div>
 output: 
   revealjs::revealjs_presentation:
     theme: solarized
